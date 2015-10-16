@@ -1,6 +1,8 @@
 # CSpider
-<<<<<<< HEAD
+
+
 c语言实现的易用的高效的网络爬虫框架.
-=======
-c语言实现的易用的高效的网络爬虫框架.
->>>>>>> 7640ae8f6310ec465c65e3e3bce2a06dae2361a7
+
+贡献者：
+[littleneko](https://github.com/littleneko)
+[luohaha](https://github.com/luohaha)       
