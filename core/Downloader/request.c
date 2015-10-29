@@ -14,7 +14,7 @@
 #include <uv-linux.h>
 #include <uv-errno.h>
 
-#include "lhttp.h"
+#include "request.h"
 #include "http_res_pro.h"
     
 void on_getaddrinfo_end(uv_getaddrinfo_t *req, int status, struct addrinfo *res);
