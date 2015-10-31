@@ -1,10 +1,10 @@
 CC=gcc
 RM=rm -f
 CFLAGS=-ggdb -O3 -W -Wall
-LIBFLAG=-luv
+LIBFLAG=-luv -lhttp_parser
 
 C_SOURCES=test.c \
-          lhttp.c \
+          request.c \
           http_res_pro.c \
 
 OBJECTS=$(C_SOURCES:.c=.o)

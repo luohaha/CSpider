@@ -1,3 +1,0 @@
-[submodule "core/Downloader/http-parser"]
-	path = core/Downloader/http-parser
-	url = https://github.com/nodejs/http-parser.git

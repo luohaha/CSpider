@@ -15,11 +15,11 @@
 #include <uv-errno.h>
 
 #include "request.h"
-#include "http-parser/http_parser.h"
+#include <http_parser.h>
 #include "http_res_pro.h"
 
 
-int dns(uv_loop_t *, const char *, const char *);   
+int dns(request_t *request, const char *, const char *);   
 void http_connect(uv_getaddrinfo_t *req, int status, struct addrinfo *res);
 void http_write(uv_connect_t *req, int status);
 void http_read_start(uv_write_t *req, int status);
@@ -32,12 +32,11 @@ int parse_url(const char *url, char *host, char *path, uint16_t *port);
 headers_t *default_headers()
 {
     headers_t   *headers = (headers_t *)malloc(sizeof(headers_t));
-    headers->headers =
-    {{ CONNECTION, CONNECTION_DEFAULT }
-    ,{ ACCEPT, ACCEPT_DEFAULT }
-    ,{ ACCEPT_ENCODING, ACCEPTENCODING_DEFAULT }
-    };
-    headers->number_headers = 3;
+    strncpy(headers->headers[0][0], CONNECTION, strlen(CONNECTION));
+
+    strncpy(headers->headers[0][1], CONNECTION_DEFAULT, strlen(CONNECTION_DEFAULT));
+
+    headers->number_headers = 1;
 
     return headers;
 }
@@ -80,9 +79,9 @@ int lhttp_request(session_t *session, http_method_e method, const char *url){
     request->cookies = default_cookies();
 
 
-    //这里设计会有一个dns缓存，首先会在dns缓存中查找dns,如果查找大dns则不需要dns过程
+    //这里设计会有一个dns缓存，首先会在dns缓存中查找dns,如果查找到dns则不需要dns的过程
     //因为dns缓存的部分还没有做，所以会每次都dns
-    int r = dns(uv_default_loop(), url, HTTP_PORT);
+    int r = dns(request, url, HTTP_PORT);
     return r;
 }
 
@@ -136,7 +135,7 @@ void alloc_buffer(uv_handle_t *handle, size_t suggested_size, uv_buf_t *buf){
 //start the http get/post/...
 //the first step dns
 //the dns callback function is on_getaddrinfo
-int dns(uv_loop_t *loop, const char *host, const char *port){
+int dns(request_t *request, const char *host, const char *port){
     struct addrinfo hints;
     memset(&hints, 0, sizeof(hints));
     hints.ai_family = AF_INET;
@@ -145,10 +144,12 @@ int dns(uv_loop_t *loop, const char *host, const char *port){
     hints.ai_flags = 0;
 
     uv_getaddrinfo_t *getaddrinfo_req = (uv_getaddrinfo_t *)malloc(sizeof(uv_getaddrinfo_t));
+    getaddrinfo_req->data = request;
     fprintf(stderr, "%s is...", host);
 
-    int r = uv_getaddrinfo(loop, getaddrinfo_req, http_connect, host, port, &hints);
+    int r = uv_getaddrinfo(uv_default_loop(), getaddrinfo_req, http_connect, host, port, &hints);
 
+    uv_run(uv_default_loop(), UV_RUN_DEFAULT);
     if(r)
     {
         fprintf(stderr, "uv_getaddrinfo call error %s\n", uv_err_name(r));

@@ -24,7 +24,6 @@
 
 int get_status_code(char *status_code, char *data, size_t len);
 
-int get_res_head(http_head_t *head, void *data, size_t len);
 
 
 #endif
