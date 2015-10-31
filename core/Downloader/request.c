@@ -15,36 +15,75 @@
 #include <uv-errno.h>
 
 #include "request.h"
+#include "http-parser/http_parser.h"
 #include "http_res_pro.h"
-    
-void on_getaddrinfo_end(uv_getaddrinfo_t *req, int status, struct addrinfo *res);
-void on_connect_end(uv_connect_t *req, int status);
-void on_write_end(uv_write_t *req, int status);
-void on_read(uv_stream_t *stream, ssize_t nread, const uv_buf_t *buf);
-
-int start_all(uv_loop_t *, const char *, const char *);
 
 
-int lhttp_client_init(lhttp_client_t *lhttp_client){
+int dns(uv_loop_t *, const char *, const char *);   
+void http_connect(uv_getaddrinfo_t *req, int status, struct addrinfo *res);
+void http_write(uv_connect_t *req, int status);
+void http_read_start(uv_write_t *req, int status);
+void http_read(uv_stream_t *stream, ssize_t nread, const uv_buf_t *buf);
+
+int parse_url(const char *url, char *host, char *path, uint16_t *port);
+
+
+
+headers_t *default_headers()
+{
+    headers_t   *headers = (headers_t *)malloc(sizeof(headers_t));
+    headers->headers =
+    {{ CONNECTION, CONNECTION_DEFAULT }
+    ,{ ACCEPT, ACCEPT_DEFAULT }
+    ,{ ACCEPT_ENCODING, ACCEPTENCODING_DEFAULT }
+    };
+    headers->number_headers = 3;
+
+    return headers;
+}
+
+
+cookies_t *default_cookies()
+{
+    cookies_t   *cookies = (cookies_t *)malloc(sizeof(cookies_t));
+    cookies->unumber_cookies = 0;
     return 0;
 }
 
 
-int lhttp_client_run(lhttp_client_t *lhttp_client, uv_timer_cb on_time){
-    uv_timer_t timer_req;
-    uv_timer_init(uv_default_loop(), &timer_req);
-    uv_timer_start(&timer_req, on_time, 5000, 2000);
-    int r = uv_run(uv_default_loop(), UV_RUN_DEFAULT);
-    printf("RUNRUNRUNRUN%d\n", r);
-    return r;
-}
 
-
-int lhttp_client_get(lhttp_client_t *lhttp_client, const char *url){
-    //at first, get the host name from url
+int lhttp_request(session_t *session, http_method_e method, const char *url){
+    //at first, get the host name and path from url
     //......
     //
-    return start_all(uv_default_loop(), url, HTTP_PORT);
+    char    *host = NULL;
+    char    *path = NULL;
+    uint16_t port = 0;
+    parse_url(url, host, path, &port);
+    //
+    //这里首先应该去ConnectionPool中根据host查找对应的连接
+    //查找到连接之后会直接跳过dns和connection的过程，直接向socket写数据
+    //没查找到对应的session则会新建一个session并加到conectionpool中
+    //因为关于连接池的部分还没有做，所以这里每次都是一个新session
+    session = (session_t *)malloc(sizeof(session));
+    
+    //用于一个http请求的request
+    request_t  *request = (request_t *)malloc(sizeof(request_t));
+    request->url_len = strlen(url);
+    request->url = (char *)malloc(request->url_len+1);
+    memset(request->url, 0, request->url_len);
+    memcpy(request->url, url, request->url_len);
+    request->host = host;
+    request->path = path;
+    request->method = method;
+    request->headers = default_headers();
+    request->cookies = default_cookies();
+
+
+    //这里设计会有一个dns缓存，首先会在dns缓存中查找dns,如果查找大dns则不需要dns过程
+    //因为dns缓存的部分还没有做，所以会每次都dns
+    int r = dns(uv_default_loop(), url, HTTP_PORT);
+    return r;
 }
 
 
@@ -55,6 +94,41 @@ int lhttp_client_get(lhttp_client_t *lhttp_client, const char *url){
 //
 //
 
+int parse_url(const char *url, char *host, char *path, uint16_t *port)
+{
+    struct http_parser_url u;
+    if(0 == http_parser_parse_url(url, strlen(url), 0, &u))
+    {
+        if(u.field_set & (1 << UF_PORT))
+        {
+            *port = u.port;
+        }
+        else
+        {
+            *port = 80;
+        }
+        
+        if(u.field_set & (1 << UF_HOST) )
+        {
+            host = (char*)malloc(u.field_data[UF_HOST].len+1);
+            strncpy(host, url+u.field_data[UF_HOST].off, u.field_data[UF_HOST].len);
+            host[u.field_data[UF_HOST].len] = 0;
+        }
+
+        if(u.field_set & (1 << UF_PATH))
+        {
+            path = (char*)malloc(u.field_data[UF_PATH].len+1);
+            strncpy(path, url+u.field_data[UF_PATH].off, u.field_data[UF_PATH].len);
+            path[u.field_data[UF_PATH].len] = 0;
+        }
+
+        return 0;
+    }
+
+    return -1;
+}
+
+
 void alloc_buffer(uv_handle_t *handle, size_t suggested_size, uv_buf_t *buf){
     *buf = uv_buf_init((char *)malloc(suggested_size), suggested_size);
 }
@@ -62,7 +136,7 @@ void alloc_buffer(uv_handle_t *handle, size_t suggested_size, uv_buf_t *buf){
 //start the http get/post/...
 //the first step dns
 //the dns callback function is on_getaddrinfo
-int start_all(uv_loop_t *loop, const char *host, const char *port){
+int dns(uv_loop_t *loop, const char *host, const char *port){
     struct addrinfo hints;
     memset(&hints, 0, sizeof(hints));
     hints.ai_family = AF_INET;
@@ -73,7 +147,7 @@ int start_all(uv_loop_t *loop, const char *host, const char *port){
     uv_getaddrinfo_t *getaddrinfo_req = (uv_getaddrinfo_t *)malloc(sizeof(uv_getaddrinfo_t));
     fprintf(stderr, "%s is...", host);
 
-    int r = uv_getaddrinfo(loop, getaddrinfo_req, on_getaddrinfo_end, host, port, &hints);
+    int r = uv_getaddrinfo(loop, getaddrinfo_req, http_connect, host, port, &hints);
 
     if(r)
     {
@@ -86,7 +160,7 @@ int start_all(uv_loop_t *loop, const char *host, const char *port){
 
 //the 2nd step: connect to the server
 //the connect callback function is on_connect
-void on_getaddrinfo_end(uv_getaddrinfo_t *req, int status, struct addrinfo *res)
+void http_connect(uv_getaddrinfo_t *req, int status, struct addrinfo *res)
 {
     if(status < 0)
     {
@@ -103,7 +177,7 @@ void on_getaddrinfo_end(uv_getaddrinfo_t *req, int status, struct addrinfo *res)
     uv_tcp_init(req->loop, socket);
     //uv_tcp_keepalive(socket, 1, 60);
 
-    int r = uv_tcp_connect(connect_req, socket, (struct sockaddr *)res->ai_addr, on_connect_end);
+    int r = uv_tcp_connect(connect_req, socket, (struct sockaddr *)res->ai_addr, http_write);
     fprintf(stderr, "connect ....\n");
 
     if(r)
@@ -119,7 +193,7 @@ void on_getaddrinfo_end(uv_getaddrinfo_t *req, int status, struct addrinfo *res)
 
 //the 3rd step: send somethinf to the server
 //the write callback function is on_write
-void on_connect_end(uv_connect_t *req, int status)
+void http_write(uv_connect_t *req, int status)
 {
     if(status < 0)
     {
@@ -133,7 +207,7 @@ void on_connect_end(uv_connect_t *req, int status)
     size_t len = strlen(base);
     uv_buf_t a = {.base = base, .len = len};
     uv_write_t *write_req = (uv_write_t *)malloc(sizeof(uv_write_t));
-    int r = uv_write(write_req, req->handle, &a, 1, on_write_end);
+    int r = uv_write(write_req, req->handle, &a, 1, http_read_start);
 
     if(r)
     {
@@ -148,7 +222,7 @@ void on_connect_end(uv_connect_t *req, int status)
 
 //the 4th step: read something from the socket
 //the readcallback function is on_read
-void on_write_end(uv_write_t *req, int status){
+void http_read_start(uv_write_t *req, int status){
    if(status < 0)
    {
         fprintf(stderr, "uv_write callback error %s\n", uv_err_name(status));
@@ -156,7 +230,7 @@ void on_write_end(uv_write_t *req, int status){
    }
 
    fprintf(stderr, "write write\n");
-   int r = uv_read_start(req->handle, alloc_buffer, on_read);
+   int r = uv_read_start(req->handle, alloc_buffer, http_read);
 
    if(r)
    {
@@ -171,7 +245,7 @@ void on_write_end(uv_write_t *req, int status){
 
 //the 5th step: read data
 //Tipe:The uv_read_cb callback will be made several times until there is no more data to read or uv_read_stop() is called
-void on_read(uv_stream_t *stream, ssize_t nread, const uv_buf_t *buf){
+void http_read(uv_stream_t *stream, ssize_t nread, const uv_buf_t *buf){
     if(nread == UV_EOF)
     {
         fprintf(stderr, "EOF\n");

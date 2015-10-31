@@ -1,7 +1,8 @@
 #ifndef __LHTTP_H__
 #define __LHTTP_H__
 
-/*
+/*****************************************************************************************
+ *Project
  *         _____       _     __         
  *   _____/ ___/____  (_)___/ /__  _____
  *  / ___/\__ \/ __ \/ / __  / _ \/ ___/
@@ -11,7 +12,8 @@
  *
  *
  *
- */
+ ****************************************************************************************/
+
 
 #include <uv.h>
 
@@ -25,6 +27,20 @@
 #define MAX_HOSTNAME_SIZE   20
 
 
+#define HOST            "Host"
+#define CONNECTION      "Connection"
+#define ACCEPT          "Accept"
+#define USER_AGENT      "User-Agent"
+#define ACCEPT_ENCODING "Accept-Encoding"
+#define ACCEPT_LANGUAGE "Accept-Language"
+#define COOKIE          "Cookie"
+
+#define CONNECTION_DEFAULT      "keep-alive"
+#define ACCEPT_DEFAULT          "text/html"
+#define USERAGENT_DEFAULT       ""
+#define ACCEPTENCODING_DEFAULT  "gzip"
+
+
 /* The connection pool, when start a connection, add it to the connection pool.
  * It is for session, because session should reuse a TCP connection to send several request. */
 struct conn_pool_t{
@@ -33,7 +49,7 @@ struct conn_pool_t{
 
 
 /* http methods */
-typedef enum http_method{
+typedef enum http_method_e{
     OPTIONS,
     GET,
     HEAD,
@@ -42,7 +58,7 @@ typedef enum http_method{
     DELETE,
     TRACE,
     CONNECT
-}http_method;
+}http_method_e;
 
 
 /* http head */
@@ -58,12 +74,17 @@ typedef struct cookies_t{
 }cookies_t;
 
 
-/* The request is a http get/post/... */
+/* The request is a http get/post/... etc */
 typedef struct request_t{
-    enum http_method    method;
+    http_method_e       method;
     char                *url;
-    headers_t           headers;
-    cookies_t           cookies;
+    int                 url_len;
+    char                *host;
+    int                 host_len;
+    char                *path;
+    int                 path_len;
+    headers_t           *headers;
+    cookies_t           *cookies;
     char                *data;
 }request_t;
 
@@ -74,11 +95,8 @@ typedef struct request_t{
  * to the host will be reused, if not, it will start a new connection, and add it to the conn_pool*/
 typedef struct session_t{
     char        host[MAX_HOSTNAME_SIZE];
-    headers_t   headers;
-    cookies_t   cookies;
+    cookies_t   *cookies;
 }session_t;
-
-
 
 
 /* the function will be called when */
@@ -86,12 +104,11 @@ typedef void (*on_http_cb)(char  *);
 
 typedef void (*timer_cb)(void);
 
-session_t   *http_default_session();
 
-int http_session_request(session_t *, http_method , const char *url);
 
-int http_session_setopt(request_t *, const char *, void *);
+int lhttp_setopt(session_t *, const char *, void *);
 
-int http_request_get(request_t *, const char *);
+int lhttp_request(session_t *, http_method_e method, const char *url);
+
 
 #endif
