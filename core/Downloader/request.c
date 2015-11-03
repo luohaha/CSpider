@@ -26,6 +26,7 @@ void http_read_start(uv_write_t *req, int status);
 void http_read(uv_stream_t *stream, ssize_t nread, const uv_buf_t *buf);
 
 int parse_url(const char *url, char *host, char *path, uint16_t *port);
+char *prepared_request(const request_t *request);
 
 
 
@@ -290,7 +291,7 @@ void http_read(uv_stream_t *stream, ssize_t nread, const uv_buf_t *buf){
 char *prepared_request(const request_t *request){
 	char	*pp_req = (char *)malloc(HEAD_SIZE);
 	
-	switch(req->method){
+	switch(request->method){
 		case GET:
 			sprintf(pp_req, "GET /%s HTTP/1.1\r\n", request->path);
 			//xxx
@@ -300,17 +301,18 @@ char *prepared_request(const request_t *request){
 		default:
 			break;
 	}
-	int	head_num = rquest->headers->number_headers;
+	int	head_num = request->headers->number_headers;
 	for(int i = 0; i<head_num; i++)
 	{
-		sprintf(pp_req, "s%: s%\r\n", request->headers[i][0], request->headers[i][1]);
+		sprintf(pp_req, "%s: %s\r\n", request->headers->headers[i][0], request->headers->headers[i][1]);
 	}
 	
-	int	cookies_num = rquest->headers->unumber_cookies;
+	int	cookies_num = request->cookies->unumber_cookies;
 	for(int i = 0; i<cookies_num; i++)
 	{
-		sprintf(pp_req, "s%: s%\r\n", request->cookies[i][0], request->cookies[i][1]);
+		sprintf(pp_req, "%s: %s\r\n", request->cookies->cookies[i][0], request->cookies->cookies[i][1]);
 	}
 	
 	sprintf(pp_req, "\r\n");
+    return pp_req;
 }
