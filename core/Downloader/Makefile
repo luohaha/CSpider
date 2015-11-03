@@ -1,6 +1,6 @@
 CC=gcc
 RM=rm -f
-CFLAGS=-ggdb -O3 -W -Wall
+CFLAGS=-ggdb -O0 -W -Wall
 LIBFLAG=-luv -lhttp_parser
 
 C_SOURCES=test.c \

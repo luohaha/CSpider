@@ -72,7 +72,7 @@ typedef struct headers_t{
 /* http request cookies */
 typedef struct cookies_t{
     char    cookies[MAX_COOKIES][2][MAX_ELEMENT_SIZE];
-    int     unumber_cookies;
+    int     number_cookies;
 }cookies_t;
 
 
