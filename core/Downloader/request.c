@@ -33,10 +33,18 @@ headers_t *default_headers()
 {
     headers_t   *headers = (headers_t *)malloc(sizeof(headers_t));
     strncpy(headers->headers[0][0], CONNECTION, strlen(CONNECTION));
-
     strncpy(headers->headers[0][1], CONNECTION_DEFAULT, strlen(CONNECTION_DEFAULT));
+	
+	strncpy(headers->headers[1][0], ACCEPT, strlen(ACCEPT));
+    strncpy(headers->headers[1][1], ACCEPT_DEFAULT, strlen(ACCEPT_DEFAULT));
+	
+	strncpy(headers->headers[2][0], ACCEPT_ENCODING, strlen(ACCEPT_ENCODING));
+    strncpy(headers->headers[2][1], ACCEPTENCODING_DEFAULT, strlen(ACCEPTENCODING_DEFAULT));
+	
+	strncpy(headers->headers[3][0], USER_AGENT, strlen(USER_AGENT));
+    strncpy(headers->headers[3][1], USERAGENT_DEFAULT, strlen(USERAGENT_DEFAULT));
 
-    headers->number_headers = 1;
+    headers->number_headers = 4;
 
     return headers;
 }
@@ -73,7 +81,9 @@ int lhttp_request(session_t *session, http_method_e method, const char *url){
     memset(request->url, 0, request->url_len);
     memcpy(request->url, url, request->url_len);
     request->host = host;
+	request->host_len = strlen(host);
     request->path = path;
+	request->path_len = strlen(path);
     request->method = method;
     request->headers = default_headers();
     request->cookies = default_cookies();
@@ -174,6 +184,7 @@ void http_connect(uv_getaddrinfo_t *req, int status, struct addrinfo *res)
     fprintf(stderr, "%s\n", addr);
 
     uv_connect_t *connect_req = (uv_connect_t *)malloc(sizeof(uv_connect_t));
+	connect_req->data = req->data;
     uv_tcp_t *socket = (uv_tcp_t *)malloc(sizeof(uv_tcp_t));
     uv_tcp_init(req->loop, socket);
     //uv_tcp_keepalive(socket, 1, 60);
@@ -181,13 +192,15 @@ void http_connect(uv_getaddrinfo_t *req, int status, struct addrinfo *res)
     int r = uv_tcp_connect(connect_req, socket, (struct sockaddr *)res->ai_addr, http_write);
     fprintf(stderr, "connect ....\n");
 
+	uv_freeaddrinfo(res);
+    free(req);
+	free(socket);
+	
     if(r)
     {
         fprintf(stderr, "uv_connect call error %s\n", uv_err_name(r));
         return;
     }
-    uv_freeaddrinfo(res);
-    free(req);
 
 }
 
@@ -203,21 +216,24 @@ void http_write(uv_connect_t *req, int status)
     }
 
     fprintf(stderr, "onconnect onconnect\n");
-    
-    char *base = "GET / HTTP/1.1\r\nHost: www.qq.com\r\nConnection: keep-alive\r\nCache-Control: max-age=0\r\nAccept: text/html\r\nUpgrade-Insecure-Requests: 1\r\nAccept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.6,ja;q=0.4\r\nUser-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36\r\nReferer: https://www.baidu.com/link?url=4jZdpA3I10NSqcywskm4nh5J7KQqPbx6TC52-mYGJSC&wd=&eqid=e194d8ab000486bf00000002562b3c71\r\nAccept-Encoding: gzip, deflate, sdch\r\nAccept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.6,ja;q=0.4\r\nCookie: pgv_info=ssid=s9417603086; ts_last=www.qq.com/; ts_refer=www.baidu.com/link; pgv_pvid=8923037070; ts_uid=5774452315; ad_play_index=66\r\n\r\n";
-    size_t len = strlen(base);
-    uv_buf_t a = {.base = base, .len = len};
+	
+    //char *base = "GET / HTTP/1.1\r\nHost: www.qq.com\r\nConnection: keep-alive\r\nCache-Control: max-age=0\r\nAccept: text/html\r\nUpgrade-Insecure-Requests: 1\r\nAccept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.6,ja;q=0.4\r\nUser-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36\r\nReferer: https://www.baidu.com/link?url=4jZdpA3I10NSqcywskm4nh5J7KQqPbx6TC52-mYGJSC&wd=&eqid=e194d8ab000486bf00000002562b3c71\r\nAccept-Encoding: gzip, deflate, sdch\r\nAccept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.6,ja;q=0.4\r\nCookie: pgv_info=ssid=s9417603086; ts_last=www.qq.com/; ts_refer=www.baidu.com/link; pgv_pvid=8923037070; ts_uid=5774452315; ad_play_index=66\r\n\r\n";
+    char *request_line = prepared_request((request_t *)req->data);
+	size_t len = strlen(request_line);
+    uv_buf_t a = {.base = request_line, .len = len};
     uv_write_t *write_req = (uv_write_t *)malloc(sizeof(uv_write_t));
+	write_req->data = req->data;
     int r = uv_write(write_req, req->handle, &a, 1, http_read_start);
-
+	
+	free(request_line);
+	
+	free(req);
+	
     if(r)
     {
         fprintf(stderr, "uv_write call error %s\n", uv_err_name(r));
         return;
     }
-
-    free(req);
-    
 }
 
 
@@ -232,14 +248,13 @@ void http_read_start(uv_write_t *req, int status){
 
    fprintf(stderr, "write write\n");
    int r = uv_read_start(req->handle, alloc_buffer, http_read);
-
+   free(req);
+   
    if(r)
    {
        fprintf(stderr, "uv_read_start call error %s\n", uv_err_name(r));
        return;
    }
-
-   free(req);
 
 }
 
@@ -268,4 +283,34 @@ void http_read(uv_stream_t *stream, ssize_t nread, const uv_buf_t *buf){
 
    //printf("status_code: %s\n", status_code);
 
+}
+
+
+/* */
+char *prepared_request(const request_t *request){
+	char	*pp_req = (char *)malloc(HEAD_SIZE);
+	
+	switch(req->method){
+		case GET:
+			sprintf(pp_req, "GET /%s HTTP/1.1\r\n", request->path);
+			//xxx
+			break;
+		case POST:
+			break;
+		default:
+			break;
+	}
+	int	head_num = rquest->headers->number_headers;
+	for(int i = 0; i<head_num; i++)
+	{
+		sprintf(pp_req, "s%: s%\r\n", request->headers[i][0], request->headers[i][1]);
+	}
+	
+	int	cookies_num = rquest->headers->unumber_cookies;
+	for(int i = 0; i<cookies_num; i++)
+	{
+		sprintf(pp_req, "s%: s%\r\n", request->cookies[i][0], request->cookies[i][1]);
+	}
+	
+	sprintf(pp_req, "\r\n");
 }

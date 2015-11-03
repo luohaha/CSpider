@@ -26,6 +26,8 @@
 
 #define MAX_HOSTNAME_SIZE   20
 
+#define HEAD_SIZE			2048
+
 
 #define HOST            "Host"
 #define CONNECTION      "Connection"
@@ -37,7 +39,7 @@
 
 #define CONNECTION_DEFAULT      "keep-alive"
 #define ACCEPT_DEFAULT          "text/html"
-#define USERAGENT_DEFAULT       ""
+#define USERAGENT_DEFAULT       "CSpider"
 #define ACCEPTENCODING_DEFAULT  "gzip"
 
 
