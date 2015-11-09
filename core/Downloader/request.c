@@ -83,14 +83,12 @@ int lhttp_request(session_t *session, http_method_e method, const char *url){
         
         //用于一个http请求的request
         request_t  *request = (request_t *)malloc(sizeof(request_t));
-        request->url_len = strlen(url);
-        request->url = (char *)malloc(request->url_len+1);
-        memset(request->url, 0, request->url_len);
-        memcpy(request->url, url, request->url_len);
+        int url_len = strlen(url);
+        request->url = (char *)malloc(url_len+1);
+        memset(request->url, 0, url_len);
+        memcpy(request->url, url, url_len);
         request->host = url_parsed->host;
-        request->host_len = strlen(url_parsed->host);
         request->path = url_parsed->path;
-        request->path_len = strlen(url_parsed->path);
         request->method = method;
         request->headers = default_headers();
         request->cookies = default_cookies();

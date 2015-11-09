@@ -5,7 +5,7 @@ LIBFLAG=-luv -lhttp_parser
 
 C_SOURCES=test.c \
           request.c \
-          http_res_pro.c \
+          http_res_parser.c \
 
 OBJECTS=$(C_SOURCES:.c=.o)
 
