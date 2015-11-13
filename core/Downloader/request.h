@@ -80,15 +80,20 @@ typedef struct cookies_t{
 typedef struct request_t{
     http_method_e       method;
     char                *url;
-    int                 url_len;
     char                *host;
-    int                 host_len;
     char                *path;
-    int                 path_len;
     headers_t           *headers;
     cookies_t           *cookies;
     char                *data;
 }request_t;
+
+
+typedef struct response_t{
+    char                response_pine[MAX_ELEMENT_SIZE];
+    headers_t           *headers;
+    cookies_t           *set_cookies;
+    char                *data;
+}response_t;
 
 
 /* The session allows you to persist certain parameters across requests.

@@ -19,13 +19,20 @@
 #include "http_res_pro.h"
 
 
+typedef struct url_parsed_t{
+    char    *host;
+    char    *port;
+    char    *path;
+}url_parsed_t;
+
+
 int dns(request_t *request, const char *);   
 void http_connect(uv_getaddrinfo_t *req, int status, struct addrinfo *res);
 void http_write(uv_connect_t *req, int status);
 void http_read_start(uv_write_t *req, int status);
 void http_read(uv_stream_t *stream, ssize_t nread, const uv_buf_t *buf);
 
-int parse_url(const char *url, char **host, char **path, uint16_t *port);
+int parse_url(const char *url, url_parsed_t *url_parsed);
 char *prepared_request(const request_t *request);
 
 
@@ -64,10 +71,8 @@ int lhttp_request(session_t *session, http_method_e method, const char *url){
     //at first, get the host name and path from url
     //......
     //
-    char    *host = NULL;
-    char    *path = NULL;
-    uint16_t port = 0;
-    if(parse_url(url, &host, &path, &port) != -1)
+    url_parsed_t    *url_parsed = (url_parsed_t *)malloc(sizeof(url_parsed_t));
+    if(parse_url(url, url_parsed) != -1)
     {
         //
         //这里首先应该去ConnectionPool中根据host查找对应的连接
@@ -78,14 +83,12 @@ int lhttp_request(session_t *session, http_method_e method, const char *url){
         
         //用于一个http请求的request
         request_t  *request = (request_t *)malloc(sizeof(request_t));
-        request->url_len = strlen(url);
-        request->url = (char *)malloc(request->url_len+1);
-        memset(request->url, 0, request->url_len);
-        memcpy(request->url, url, request->url_len);
-        request->host = host;
-        request->host_len = strlen(host);
-        request->path = path;
-        request->path_len = strlen(path);
+        int url_len = strlen(url);
+        request->url = (char *)malloc(url_len+1);
+        memset(request->url, 0, url_len);
+        memcpy(request->url, url, url_len);
+        request->host = url_parsed->host;
+        request->path = url_parsed->path;
         request->method = method;
         request->headers = default_headers();
         request->cookies = default_cookies();
@@ -107,40 +110,85 @@ int lhttp_request(session_t *session, http_method_e method, const char *url){
 //
 //
 
-int parse_url(const char *url, char **host, char **path, uint16_t *port)
+int parse_url(const char *url, url_parsed_t *url_parsed)
 {
-    if(url != NULL)
+    if(url)
     {
-        struct http_parser_url u;
-        if(0 == http_parser_parse_url(url, strlen(url), 0, &u))
+        int url_len = strlen(url);
+        int idx = 0;
+        int host_off = 0, path_off = 0;
+        int host_len = 0, path_len = 0;
+        char    port[10];
+        /* url以标准的http://开头，port默认为HTTP_PORT(80)*/
+        if (strncmp(url, "http://", 7) == 0)
         {
-            if(u.field_set & (1 << UF_PORT))
+            host_off = 7;
+        }
+        /* url以标准的https://开头，默认port为HTTPS_PORT(443)*/
+        else if(strncmp(url, "https://", 8) == 0)
+        {
+            host_off = 8;
+        }
+        /* 此时认为url以host开头，在没有指定port的情况下，port默认为80。*/
+        else
+        {
+            host_off = 0;
+        }
+
+        idx = host_off;
+        while(idx < url_len)
+        {
+            /* port*/
+            if(url[idx] == ':' && path_off == 0)
             {
-                *port = u.port;
+                host_len = idx - host_off;
+                idx++;
             }
+            /* path*/
+            else if(url[idx] == '/')
+            {
+                if(host_len == 0)
+                {
+                    host_len = idx - host_off;
+                    path_off = idx;
+                    idx++;
+                }
+                else
+                {
+                    strncpy(port, url+host_off+host_len, idx);
+                    path_off = idx;
+                    idx++;
+                }
+            }
+            /* just host or path*/
             else
             {
-                *port = 80;
+                idx++;
             }
-            
-            if(u.field_set & (1 << UF_HOST) )
-            {
-                *host = (char*)malloc(u.field_data[UF_HOST].len+1);
-                strncpy(*host, url+u.field_data[UF_HOST].off, u.field_data[UF_HOST].len);
-                (*host)[u.field_data[UF_HOST].len] = 0;
-            }
-
-            if(u.field_set & (1 << UF_PATH))
-            {
-                *path = (char*)malloc(u.field_data[UF_PATH].len+1);
-                strncpy(*path, url+u.field_data[UF_PATH].off, u.field_data[UF_PATH].len);
-                (*path)[u.field_data[UF_PATH].len] = 0;
-            }
-
-            return 0;
         }
-    }
+        path_len = url_len - path_off;
 
+        if(host_len == 0)
+            host_len = url_len - host_off;
+
+        url_parsed->host = (char *)malloc(host_len + 1);
+        strncpy(url_parsed->host, url+host_off, host_len);
+        url_parsed->host[host_len] = 0;
+
+        if (path_off != 0)
+        {
+            url_parsed->path = (char *)malloc(path_len + 1);
+            strncpy(url_parsed->path, url + path_off, path_len);
+            url_parsed->path[path_len] = 0;
+        }
+        else
+        {
+            url_parsed->path = (char *)malloc(2);
+            url_parsed->path[0] = '/';
+            url_parsed->path[1] = 0;
+        }
+        return 0;
+    }
     return -1;
 }
 
@@ -196,6 +244,8 @@ void http_connect(uv_getaddrinfo_t *req, int status, struct addrinfo *res)
     uv_tcp_init(req->loop, socket);
     uv_tcp_keepalive(socket, 1, 60);
 
+    /* where on_connect will be called after the connection is established. 
+     * The callback receives the uv_connect_t struct,  which has a member .handle pointing to the socket. */
     int r = uv_tcp_connect(connect_req, socket, (struct sockaddr *)res->ai_addr, http_write);
     fprintf(stderr, "connect ....\n");
 
@@ -272,6 +322,7 @@ void http_read(uv_stream_t *stream, ssize_t nread, const uv_buf_t *buf){
     if(nread == UV_EOF)
     {
         fprintf(stderr, "EOF\n");
+        free(stream);
         return;
     }
     if(nread < 0)
