@@ -40,12 +40,15 @@
 /* 由于缓冲区大小的原因，可能res中不包含完整的http头，这里认为读到“\r\n\r\n”表示整个http头已经读完
  */
 
-int  http_res_parser(const char *res, response_t *response，int *body_off)
+int  http_res_parser(const char *res, response_t *res_parser, int *body_off)
 {
     int res_len = strlen(res);
+    /* Status line */
     const char *p = strstr(res, CRLF);
     if(p != NULL)
     {
+        //strncpy(res_parse)
     }
 
+    return 0;
 }

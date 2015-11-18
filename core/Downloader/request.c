@@ -11,12 +11,10 @@
 #include <netdb.h>
 
 #include <uv.h>
-#include <uv-linux.h>
 #include <uv-errno.h>
 
 #include "request.h"
-#include <http_parser.h>
-#include "http_res_pro.h"
+#include "http_res_parser.h"
 
 
 typedef struct url_parsed_t{

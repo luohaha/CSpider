@@ -1,7 +1,7 @@
 CC=gcc
 RM=rm -f
 CFLAGS=-ggdb -O0 -W -Wall
-LIBFLAG=-luv -lhttp_parser
+LIBFLAG=-luv
 
 C_SOURCES=test.c \
           request.c \
