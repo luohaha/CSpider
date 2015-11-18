@@ -89,7 +89,7 @@ typedef struct request_t{
 
 
 typedef struct response_t{
-    char                response_pine[MAX_ELEMENT_SIZE];
+    char                status_line[MAX_ELEMENT_SIZE];
     headers_t           *headers;
     cookies_t           *set_cookies;
     char                *data;
