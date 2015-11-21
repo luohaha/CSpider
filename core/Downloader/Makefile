@@ -15,4 +15,4 @@ $(TARGET): $(OBJECTS)
 	$(CC) -c $(CFLAGS) $(LIBFLAG) $< -o $@
 
 clean:
-	rm -f $(OBJECTS) *.*~ $(TARGET) *.download
+	rm -f $(OBJECTS) *~ $(TARGET) *.download
