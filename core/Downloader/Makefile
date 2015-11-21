@@ -8,7 +8,7 @@ C_SOURCES=download.c
 
 OBJECTS=$(C_SOURCES:.c=.o)
 
-lhttp: $(OBJECTS)
+$(TARGET): $(OBJECTS)
 	$(CC) -o $(TARGET) $(OBJECTS) $(LIBFLAG)
 
 %.o: %.c
