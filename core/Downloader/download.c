@@ -1,3 +1,4 @@
+#include "../CS.h"
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -9,6 +10,7 @@ CURLM *curl_handle;
 uv_timer_t timeout;
 
 void check_multi_info();
+void download(uv_work_t *req);
 
 typedef struct curl_context_s {
   uv_poll_t poll_handle;
@@ -42,7 +44,7 @@ void destroy_curl_context(curl_context_t *context) {
 */
 void add_download(const char* url, int num) {
   char filename[50];
-  sprintf(filename, "%d.download", num);
+  sprintf(filename, "%s.download", url);
 
   FILE *file;
 
@@ -148,7 +150,25 @@ int handle_socket(CURL *easy, curl_socket_t s, int action, void *userp, void *so
   return 0;
 }
 
-int main(int argc, char **argv) {
+void download(uv_work_t *req) {
+  //uv_async_t *async = (uv_async_t*)malloc(sizeof(uv_async_t));
+  
+  CURL *curl;
+  CURLcode res;
+  curl = curl_easy_init();
+  if (curl) {
+    curl_easy_setopt(curl, CURLOPT_URL, req->data);
+    //curl_easy_setopt(curl, CURLOPT_WRITEDATA, async);
+    res = curl_easy_perform(curl);
+    curl_easy_cleanup(curl);
+  }
+}
+
+/*
+  测试部分
+*/
+void main(int argc, char **argv) {
+  /*
   loop = uv_default_loop();
 
   if (argc <= 1) {
@@ -159,18 +179,30 @@ int main(int argc, char **argv) {
     fprintf(stderr, "could not init curl\n");
     return 1;
   }
-
+  
   uv_timer_init(loop, &timeout);
 
   curl_handle = curl_multi_init();
   curl_multi_setopt(curl_handle, CURLMOPT_SOCKETFUNCTION, handle_socket);
   curl_multi_setopt(curl_handle, CURLMOPT_TIMERFUNCTION, start_timeout);
-
+  
   while(argc-- > 1) {
     add_download(argv[argc], argc);
   }
 
   uv_run(loop, UV_RUN_DEFAULT);
   curl_multi_cleanup(curl_handle);
-  return 0;
+  */
+  /*
+  CURL *curl;
+  CURLcode res;
+  curl = curl_easy_init();
+  if (curl) {
+    curl_easy_setopt(curl, CURLOPT_URL, argv[1]);
+    //curl_easy_setopt(curl, );
+    res = curl_easy_perform(curl);
+    curl_easy_cleanup(curl);
+  }
+  */
+  download(argv[1]);
 }

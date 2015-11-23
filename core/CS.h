@@ -5,6 +5,8 @@
 #include<stdlib.h>
 #include<uv.h>
 #include<assert.h>
+#include<inttypes.h>
+#include<curl/curl.h>
 
 /*
   任务
@@ -40,6 +42,8 @@ typedef struct cs_rawText_queue_struct {
   cs_rawText_t *data;
   struct cs_rawText_queue_struct *next;
   struct cs_rawText_queue_struct *prev;
-}
-  
+} cs_rawText_queue;
+
+extern void download(uv_work_t *req);
+
 #endif
