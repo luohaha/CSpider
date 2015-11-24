@@ -1,13 +1,7 @@
-#ifndef CS_H
-#define CS_H
+#ifndef DOWNLOADER_H
+#define DOWNLOADER_H
 
-#include<stdio.h>
-#include<stdlib.h>
-#include<uv.h>
-#include<assert.h>
-#include<inttypes.h>
-#include<curl/curl.h>
-
+#include "./CS.h"
 /*
   任务
   存放要执行抓取的url
@@ -44,6 +38,7 @@ typedef struct cs_rawText_queue_struct {
   struct cs_rawText_queue_struct *prev;
 } cs_rawText_queue;
 
-extern void download(uv_work_t *req);
+cs_rawText_queue *initDataQueue();
+void createDataAndInsert(cs_rawText_queue *head, char *begin, const char* type);
 
 #endif

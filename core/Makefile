@@ -1,16 +1,16 @@
 TARGET=CSpider
 CC=gcc
-CFLAGS=-ggdb -o0 -W -Wall
+CFLAGS=-ggdb -o0 -W -Wall -I includes
 LIBFLAG=-luv -lcurl
-C_SOURCE=CSpider.c
+C_SOURCES=$(shell find . -name "*.c")
+C_OBJECTS=$(patsubst %.c, %.o, $(C_SOURCES))
+TEMP=$(shell find . -name "*~")
 
-OBJECTS=$(C_SOURCE:.c=.o)
+$(TARGET): $(C_OBJECTS)
+	$(CC) -o $(TARGET) $(C_OBJECTS) $(LIBFLAG)
 
-$(TARGET): $(OBJECTS)
-	$(CC) -o $(TARGET) $(OBJECTS) $(LIBFLAG)
-
-%.o: $(C_SOURCE) %.h
+%.o: $(C_SOURCES) %.h
 	$(CC) -c $(CFLAGS) $(LIBFLAG)$< -o $@
 
 clean:
-	rm -f $(OBJECTS) *~ $(TARGET)
+	rm -f $(C_OBJECTS) $(TEMP) $(TARGET)
