@@ -13,4 +13,4 @@ $(TARGET): $(C_OBJECTS)
 	$(CC) -c $(CFLAGS) $(LIBFLAG)$< -o $@
 
 clean:
-	rm -f $(C_OBJECTS) $(TEMP) $(TARGET)
+	rm -f $(shell find . -name "*.o") $(TEMP) $(TARGET)
