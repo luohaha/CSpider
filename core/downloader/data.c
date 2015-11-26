@@ -15,16 +15,12 @@ textq *initDataQueue() {
 /*
   创建节点
 */
-void createDataAndInsert(textq *head, char **begin, const char* type) {
+text *createData(const char* type) {
   text *node = (text*)malloc(sizeof(text));
-  node->data = begin;
+  char *buf = (char*)malloc(sizeof(char));
+  node->data = &buf;
   node->type = type;
-  textq *link = (textq*)malloc(sizeof(textq));
-  link->data = node;
-  link->prev = head->prev;
-  link->next = head;
-  link->prev->next = link;
-  link->next->prev = link;
-  return;
+  
+  return node;
 }
 
