@@ -15,11 +15,13 @@ cs_task_queue *task_queue;
 */
 cs_task_queue *task_queue_doing;
 
-size_t save_data(void *ptr, size_t size, size_t nmemb, char **save) {
-  size_t current = strlen(*save);
+//char *tmp;
+
+size_t save_data(void *ptr, size_t size, size_t nmemb, cs_task_t *save) {
+  size_t current = strlen(save->data->data);
   size_t all = size * nmemb;
-  *save = (char*)realloc(*save, all+current);
-  strcpy((*save)+current, (char*)ptr);
+  save->data->data = (char*)realloc(save->data->data, all+current);
+  strcpy(save->data->data+current, (char*)ptr);
   return all;
 }
 
@@ -27,16 +29,15 @@ void download(uv_work_t *req) {
   CURL *curl;
   CURLcode res;
   curl = curl_easy_init();
-  char *tmp = (char*)malloc(sizeof(char));
-  ((cs_task_t*)(req->data))->data = &tmp;
+  
   if (curl) {
     curl_easy_setopt(curl, CURLOPT_URL, ((cs_task_t*)(req->data))->url);
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, save_data);
-    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &tmp);
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA, req->data);
     
     res = curl_easy_perform(curl);
-    printf("%p\n", ((cs_task_t*)(req->data))->data);
-    //curl_easy_cleanup(curl);
+    
+    curl_easy_cleanup(curl);
   }
 }
 
@@ -44,10 +45,11 @@ void download(uv_work_t *req) {
   work线程完成工作后
 */
 void work_done(uv_work_t *req, int status) {
-  //cs_task_queue *q = removeTask(task_queue_doing, req->data);
-  //assert(q != NULL);
-  printf("%s\n", *((cs_task_t*)(req->data))->data);
-  //freeTask(q);
+  cs_task_queue *q = removeTask(task_queue_doing, req->data);
+  assert(q != NULL);
+  printf("%s\n", (((cs_task_t*)(req->data))->data->data));
+  
+  freeTask(q);
   return;
 }
 
@@ -79,7 +81,7 @@ int main(int argc, char **argv) {
   task_queue_doing = initTaskQueue();
 
   createTask(task_queue, "www.baidu.com", NULL, 1);
-  //createTask(task_queue, "www.youku.com", NULL, 1);
+  createTask(task_queue, "www.sina.com.cn", NULL, 1);
 
   uv_idle_init(loop, idler);
   uv_idle_start(idler, watcher);

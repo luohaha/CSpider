@@ -18,7 +18,7 @@ textq *initDataQueue() {
 text *createData(const char* type) {
   text *node = (text*)malloc(sizeof(text));
   char *buf = (char*)malloc(sizeof(char));
-  node->data = &buf;
+  node->data = buf;
   node->type = type;
   
   return node;

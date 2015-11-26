@@ -44,7 +44,7 @@ typedef struct cs_task_queue_struct {
   例如html，json等，直接返回的数据
 */
 struct cs_rawText_struct {
-  char **data;
+  char *data;
   char *type;//数据的类型，比如html，json
 };
 
