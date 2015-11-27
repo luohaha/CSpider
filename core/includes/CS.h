@@ -8,6 +8,7 @@
 #include<assert.h>
 #include<inttypes.h>
 #include<curl/curl.h>
+#include<pcre.h>
 
 #ifndef TRUE
     #define TRUE 1

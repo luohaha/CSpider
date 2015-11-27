@@ -1,7 +1,7 @@
 TARGET=CSpider
 CC=gcc
 CFLAGS=-ggdb -o0 -W -Wall -I includes
-LIBFLAG=-luv -lcurl
+LIBFLAG=-luv -lcurl -lpcre
 C_SOURCES=$(shell find . -name "*.c")
 C_OBJECTS=$(patsubst %.c, %.o, $(C_SOURCES))
 TEMP=$(shell find . -name "*~")
