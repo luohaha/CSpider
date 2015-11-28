@@ -25,7 +25,7 @@ char *regex(const char *regex, char *str, int flag) {
 
 */
 
-char **regexAll(const char *regex, char *str, int flag) {
+char **regexAll(const char *regex, char *str, int *num, int flag) {
   assert(flag == 0 || flag == 1);
   const char *error;
     int   erroffset;
@@ -48,7 +48,7 @@ char **regexAll(const char *regex, char *str, int flag) {
 
     unsigned int offset = 0;
     unsigned int len    = strlen(str);
-    unsigned int index = 0;
+    int index = 0;
     while (offset < len && (rc = pcre_exec(re, 0, str, len, offset, 0, ovector, sizeof(ovector))) >= 0)
     {
       if (flag == 1) {
@@ -64,20 +64,19 @@ char **regexAll(const char *regex, char *str, int flag) {
 	index++;
 	offset = ovector[1];
       }
-      //sub[index] = (char*)malloc(sizeo);
-      //pcre_get_substring(str, ovector, rc, 1, &subb[index]);
-      //index++;
+      
     }
-    
+    *num = index;
   
   return subb;
 }
 
-
-
+//text unit
+/*
 int main() {
   char *src="-a-*-b-*-c-";
   printf("%s\n", regex("-(.+?)-", src, 1));
   //regexAll("-(.+?)-", src);
   return 0;
 }
+*/

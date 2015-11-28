@@ -3,7 +3,7 @@
 
 #include "CS.h"
 
-typedef struct cs_rawText_struct cs_rawText_t;
+
 /*
 key value对
 */
@@ -28,16 +28,17 @@ typedef struct cs_task_struct {
   int prior;//优先级1~10
   cs_rawText_t *data;//指向任务完成后的数据
   uv_work_t *worker;//指向执行此任务的工作线程的handle
+  cspider_t *cspider;//指向当前拥有此任务的spider
 } cs_task_t;
 
 /*
   任务队列
 */
-typedef struct cs_task_queue_struct {
+struct cs_task_queue_struct {
   cs_task_t *task;
   struct cs_task_queue_struct *next;
   struct cs_task_queue_struct *prev;
-} cs_task_queue;
+};
 
 /*
   原始数据
@@ -51,15 +52,16 @@ struct cs_rawText_struct {
 /*
   数据队列
 */
-typedef struct cs_rawText_queue_struct {
+struct cs_rawText_queue_struct {
   cs_rawText_t *data;
   struct cs_rawText_queue_struct *next;
   struct cs_rawText_queue_struct *prev;
-} cs_rawText_queue;
+};
 
 /*data.c*/
 cs_rawText_queue *initDataQueue();
 cs_rawText_t *createData(const char* type);
+void addData(cs_rawText_queue *head, cs_rawText_t *data);
 
 /*task.c*/
 int isTaskQueueEmpty(cs_task_queue *head);
@@ -69,4 +71,6 @@ cs_task_queue *removeTask(cs_task_queue *head, cs_task_t *task);
 void addTask(cs_task_queue *head, cs_task_queue *task);
 void freeTask(cs_task_queue *node);
 
+
+//extern cs_rawText_queue *data_queue;
 #endif

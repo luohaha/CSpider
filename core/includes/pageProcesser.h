@@ -7,6 +7,6 @@
 #define REGEX_NO_ALL 1
 
 char *regex(const char *regex, char *str, int flag);
-char **regexAll(const char *regex, char *str, int flag);
+char **regexAll(const char *regex, char *str, int *num, int flag);
 
 #endif

@@ -24,3 +24,16 @@ text *createData(const char* type) {
   return node;
 }
 
+/*
+  将获取到的数据加入队列
+*/
+void addData(textq *head, text *data) {
+
+  textq *queue = (textq*)malloc(sizeof(textq));
+  queue->data = data;
+  queue->next = head;
+  queue->prev = head->prev;
+  queue->next->prev = queue;
+  queue->prev->next = queue;
+  return;
+}
