@@ -60,16 +60,7 @@ void cs_setopt_threadnum(cspider_t *cspider, int flag, int number) {
 }
 
 int cs_run(cspider_t *cspider) {
-  //loop = uv_default_loop();
-  //idler = (uv_idle_t*)malloc(sizeof(uv_idle_t));
   
-  //data_queue = initDataQueue();
-  //task_queue = initTaskQueue();
-  //task_queue_doing = initTaskQueue();
-
-  //createTask(cspider->task_queue, "www.baidu.com", NULL, 1);
-  //createTask(cspider->task_queue, "www.sina.com.cn", NULL, 1);
-
   uv_idle_init(cspider->loop, cspider->idler);
   uv_idle_start(cspider->idler, watcher);
   

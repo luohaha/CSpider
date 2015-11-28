@@ -2,6 +2,7 @@
 #define CSPIDER_H
 
 #include "CS.h"
+#include "downloader.h"
 
 #define DOWNLOAD 1
 #define SAVE     0
@@ -19,5 +20,12 @@ struct cspider_struct {
   int download_thread;
   int pipeline_thread;
 };
+
+cspider_t *init_cspider();
+void cs_setopt_url(cspider_t *cspider, char *url, request_t *param, int prior);
+void cs_setopt_process(cspider_t *cspider, void *process);
+void cs_setopt_save(cspider_t *cspider, void *save);
+void cs_setopt_threadnum(cspider_t *cspider, int flag, int number);
+int cs_run(cspider_t *cspider);
 
 #endif
