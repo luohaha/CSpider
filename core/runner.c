@@ -28,6 +28,7 @@ cspider_t *init_cspider() {
   spider->loop = uv_default_loop();
   spider->task_queue_doing = initTaskQueue();
   spider->data_queue = initDataQueue();
+  spider->data_queue_doing = initDataQueue();
   spider->idler = (uv_idle_t*)malloc(sizeof(uv_idle_t));
   spider->idler->data = spider;
   return spider;
@@ -40,12 +41,12 @@ void cs_setopt_url(cspider_t *cspider, char *url, request_t *param, int prior) {
   createTask(cspider->task_queue, url, param, prior);
 }
 
-void cs_setopt_process(cspider_t *cspider, void *process) {
+void cs_setopt_process(cspider_t *cspider, void (*process)(cspider_t *, char*)) {
   assert(cspider != NULL);
   cspider->process = process;
 }
 
-void cs_setopt_save(cspider_t *cspider, void *save) {
+void cs_setopt_save(cspider_t *cspider, void (*save)(char*)) {
   assert(cspider != NULL);
   cspider->save = save;
 }

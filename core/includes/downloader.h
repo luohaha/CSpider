@@ -47,6 +47,8 @@ struct cs_task_queue_struct {
 struct cs_rawText_struct {
   char *data;
   char *type;//数据的类型，比如html，json
+  uv_work_t *worker;//指向执行此任务的工作线程的handle
+  cspider_t *cspider;//指向当前拥有此任务的spider
 };
 
 /*
@@ -61,7 +63,9 @@ struct cs_rawText_queue_struct {
 /*data.c*/
 cs_rawText_queue *initDataQueue();
 cs_rawText_t *createData(const char* type);
-void addData(cs_rawText_queue *head, cs_rawText_t *data);
+void addData(cs_rawText_queue *head, cs_rawText_queue *queue);
+cs_rawText_queue *removeData(cs_rawText_queue *head, cs_rawText_t *data);
+void freeData(cs_rawText_queue *node);
 
 /*task.c*/
 int isTaskQueueEmpty(cs_task_queue *head);

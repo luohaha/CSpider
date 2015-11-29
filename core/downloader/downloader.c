@@ -1,5 +1,6 @@
 #include "downloader.h"
 #include "spider.h"
+#include "pageProcesser.h"
 
 
 //char *tmp;
@@ -37,8 +38,10 @@ void work_done(uv_work_t *req, int status) {
   cspider->download_thread--;
   cs_task_queue *q = removeTask(cspider->task_queue_doing, req->data);
   assert(q != NULL);
-  printf("%s\n", (((cs_task_t*)(req->data))->data->data));
-  addData(cspider->data_queue, q->task->data);
+  //printf("%s\n", (((cs_task_t*)(req->data))->data->data));
+  cs_rawText_queue *queue = (cs_rawText_queue*)malloc(sizeof(cs_rawText_queue));
+  queue->data = q->task->data;
+  addData(cspider->data_queue, queue);
   freeTask(q);
   return;
 }
@@ -59,8 +62,8 @@ void watcher(uv_idle_t *handle) {
       uv_work_t *req = (uv_work_t*)malloc(sizeof(uv_work_t));
       req->data = rem->task;
       //指向执行自己的工作线程handle
-      rem->task->worker = req;
-      rem->task->cspider = cspider;
+      ((cs_task_t*)rem->task)->worker = req;
+      ((cs_task_t*)rem->task)->cspider = cspider;
       addTask(cspider->task_queue_doing, rem);
       uv_queue_work(cspider->loop, req, download, work_done);
 
@@ -70,7 +73,21 @@ void watcher(uv_idle_t *handle) {
   }
   
   if (!isTaskQueueEmpty(cspider->data_queue)) {
-    
+    //还有未完成的数据处理任务
+    if (cspider->pipeline_thread <= cspider->pipeline_thread_max) {
+      cs_rawText_queue *rem = removeData(cspider->data_queue, cspider->data_queue->next->data);
+      assert(rem != NULL);
+      uv_work_t *req = (uv_work_t*)malloc(sizeof(uv_work_t));
+      //req->data = rem->data;
+      //指向工作的线程handle
+      ((cs_rawText_t*)rem->data)->worker = req;
+      ((cs_rawText_t*)rem->data)->cspider = cspider;
+      req->data = rem->data;
+      
+      addData(cspider->data_queue_doing, rem);
+      uv_queue_work(cspider->loop, req, dataproc, datasave);
+      cspider->pipeline_thread++;
+    }
   }
 
   if (!isTaskQueueEmpty(cspider->task_queue_doing) ||
