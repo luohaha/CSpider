@@ -61,6 +61,7 @@ struct cs_rawText_queue_struct {
 };
 
 /*data.c*/
+int isDataQueueEmpty(cs_rawText_queue *head);
 cs_rawText_queue *initDataQueue();
 cs_rawText_t *createData(const char* type);
 void addData(cs_rawText_queue *head, cs_rawText_queue *queue);

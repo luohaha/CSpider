@@ -1,6 +1,13 @@
 #include "downloader.h"
 #define textq cs_rawText_queue
 #define text  cs_rawText_t
+
+/*
+  判断数据队列是否未空
+*/
+int isDataQueueEmpty(cs_rawText_queue *head) {
+  return (head->next == head);
+}
 /*
 新建头节点
 */

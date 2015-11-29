@@ -20,6 +20,7 @@ struct cspider_struct {
   int pipeline_thread_max;
   int download_thread;
   int pipeline_thread;
+  uv_rwlock_t *lock;
 };
 
 cspider_t *init_cspider();

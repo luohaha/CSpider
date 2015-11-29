@@ -35,6 +35,7 @@ void download(uv_work_t *req) {
 */
 void work_done(uv_work_t *req, int status) {
   cspider_t *cspider = ((cs_task_t*)req->data)->cspider;
+  uv_rwlock_wrlock(cspider->lock);
   cspider->download_thread--;
   cs_task_queue *q = removeTask(cspider->task_queue_doing, req->data);
   assert(q != NULL);
@@ -43,11 +44,13 @@ void work_done(uv_work_t *req, int status) {
   queue->data = q->task->data;
   addData(cspider->data_queue, queue);
   freeTask(q);
+  uv_rwlock_wrunlock(cspider->lock);
   return;
 }
 
 void watcher(uv_idle_t *handle) {
   cspider_t *cspider = (cspider_t*)handle->data;
+  uv_rwlock_wrlock(cspider->lock);
   if (!isTaskQueueEmpty(cspider->task_queue)) {
     //还有未执行或未完成的任务
     //启动work线程
@@ -91,9 +94,11 @@ void watcher(uv_idle_t *handle) {
   }
 
   if (!isTaskQueueEmpty(cspider->task_queue_doing) ||
-      !isTaskQueueEmpty(cspider->task_queue)) {
+      !isTaskQueueEmpty(cspider->task_queue) ||
+      !isDataQueueEmpty(cspider->data_queue) ||
+      !isDataQueueEmpty(cspider->data_queue_doing)) {
 
-    
+    uv_rwlock_wrunlock(cspider->lock);
     
   } else {
     uv_idle_stop(handle);
