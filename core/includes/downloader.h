@@ -45,7 +45,9 @@ struct cs_task_queue_struct {
   例如html，json等，直接返回的数据
 */
 struct cs_rawText_struct {
-  char *data;
+  char *data[BUFFER_MAX_NUMBER];
+  int count;//数据块的个数
+  int length;//数据的长度
   char *type;//数据的类型，比如html，json
   uv_work_t *worker;//指向执行此任务的工作线程的handle
   cspider_t *cspider;//指向当前拥有此任务的spider

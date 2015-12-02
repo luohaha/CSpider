@@ -7,16 +7,19 @@
 
 size_t save_data(void *ptr, size_t size, size_t nmemb, void *ss) {
   cs_task_t *save = (cs_task_t*)ss;
-  size_t current = strlen(save->data->data);
+  
   size_t all = size * nmemb;
-  save->data->data = (char*)realloc(save->data->data, all+current);
-  strcpy(save->data->data+current, (char*)ptr);
+  save->data->data[save->data->count] = (char*)malloc(sizeof(char)*all);
+  strcpy(save->data->data[save->data->count], (char*)ptr);
+  save->data->count++;
+  save->data->length += all;
   return all;
 }
 
 void download(uv_work_t *req) {
   CURL *curl;
   CURLcode res;
+  //((cs_task_t*)req->data)->data->data = (char*)malloc(sizeof(char)*5000);
   curl = curl_easy_init();
   
   if (curl) {

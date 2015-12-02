@@ -24,8 +24,10 @@ textq *initDataQueue() {
 */
 text *createData(const char* type) {
   text *node = (text*)malloc(sizeof(text));
-  char *buf = (char*)malloc(sizeof(char));
-  node->data = buf;
+  //char *buf = (char*)malloc(sizeof(char));
+  //node->data = buf;
+  node->count = 0;
+  node->length = 0;
   node->type = type;
   
   return node;
@@ -69,7 +71,12 @@ textq *removeData(textq *head, text *data) {
 */
 void freeData(textq *node) {
   free(node->data->worker);
-  free(node->data->data);
+  int i;
+  for (i = 0; i < node->data->count; i++) {
+    //逐个free数据块
+    free(node->data->data[i]);
+  }
+  //free(node->data->data);
   free(node->data);
   free(node);
 }

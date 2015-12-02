@@ -2,7 +2,17 @@
 
 void dataproc(uv_work_t *req) {
   cspider_t *cspider = ((cs_rawText_t*)req->data)->cspider;
-  (cspider->process)(cspider, ((cs_rawText_t*)req->data)->data);
+  cs_rawText_t *text = (cs_rawText_t*)req->data;
+  //将buffer链表中的数据取出，统一存放在一个字符串中
+  char *get = (char*)malloc(sizeof(char) * text->length);
+  int i;
+  int currentCount = 0;
+  for (i = 0; i < text->count; i++) {
+    strcpy(get+currentCount, text->data[i]);
+    currentCount = strlen(text->data[i]);
+  }
+  //得到了数据get
+  (cspider->process)(cspider, get);
   //(cspider->process)(cspider, "ttd");
 }
 

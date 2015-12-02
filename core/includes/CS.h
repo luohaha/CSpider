@@ -10,6 +10,11 @@
 #include<curl/curl.h>
 #include<pcre.h>
 
+/*
+保存返回的数据块的最大数目
+*/
+#define BUFFER_MAX_NUMBER 1024
+
 #ifndef TRUE
     #define TRUE 1
     #define FALSE 0

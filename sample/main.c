@@ -1,17 +1,15 @@
-#include "spider.h"
-#include "pageProcesser.h"
+#include<cspider/spider.h>
 
 void p(cspider_t *cspider, char *d) {
   char *get = regex("http://(.+?).com", d, REGEX_ALL);
   saveString(cspider, get);
-  if (get == NULL || get == "(null)") {
-
-  } else
-    addUrl(cspider, get, NULL, 1);
+  
+    //addUrl(cspider, get, NULL, 1);
 }
 
 void s(char *str) {
   printf("%s\n", str);
+  return;
 }
 
 int main() {
@@ -20,6 +18,9 @@ int main() {
   
   cs_setopt_url(spider, "www.baidu.com", NULL, 1);
   cs_setopt_url(spider, "movie.douban.com", NULL, 1);
+  //cs_setopt_url(spider, "www.sina.com.cn", NULL, 1);
+  cs_setopt_url(spider, "www.youku.com", NULL, 1);
+  cs_setopt_url(spider, "www.baidu.com", NULL, 1);
   cs_setopt_process(spider, p);
   cs_setopt_save(spider, s);
   

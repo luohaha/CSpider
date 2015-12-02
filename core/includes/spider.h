@@ -3,6 +3,7 @@
 
 #include "CS.h"
 #include "downloader.h"
+#include "pageProcesser.h"
 
 #define DOWNLOAD 1
 #define SAVE     0
