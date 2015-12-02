@@ -13,7 +13,7 @@ void dataproc(uv_work_t *req) {
   }
   //得到了数据get
   (cspider->process)(cspider, get);
-  //(cspider->process)(cspider, "ttd");
+  free(get);
 }
 
 void datasave(uv_work_t *req) {

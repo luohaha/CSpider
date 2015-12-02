@@ -18,7 +18,6 @@ int main() {
   
   cs_setopt_url(spider, "www.baidu.com", NULL, 1);
   cs_setopt_url(spider, "movie.douban.com", NULL, 1);
-  //cs_setopt_url(spider, "www.sina.com.cn", NULL, 1);
   cs_setopt_url(spider, "www.youku.com", NULL, 1);
   cs_setopt_url(spider, "www.baidu.com", NULL, 1);
   cs_setopt_process(spider, p);
