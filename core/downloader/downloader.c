@@ -3,7 +3,6 @@
 #include "pageProcesser.h"
 
 
-//char *tmp;
 
 size_t save_data(void *ptr, size_t size, size_t nmemb, void *ss) {
   cs_task_t *save = (cs_task_t*)ss;
@@ -20,13 +19,25 @@ void download(uv_work_t *req) {
   CURL *curl;
   CURLcode res;
   //((cs_task_t*)req->data)->data->data = (char*)malloc(sizeof(char)*5000);
+  cs_task_t *task = (cs_task_t*)req->data;
+  cspider_t *cspider = task->cspider;
+  site_t *site = (site_t*)cspider->site;
   curl = curl_easy_init();
   
   if (curl) {
-    curl_easy_setopt(curl, CURLOPT_URL, ((cs_task_t*)(req->data))->url);
+    if (site->user_agent != NULL) {
+      curl_easy_setopt(curl, CURLOPT_USERAGENT, site->user_agent);
+    }
+    if (site->proxy != NULL) {
+      curl_easy_setopt(curl, CURLOPT_PROXY, site->proxy);
+    }
+    if (site->timeout != 0) {
+      curl_easy_setopt(curl, CURLOPT_TIMEOUT_MS, site->timeout);
+    }
+    curl_easy_setopt(curl, CURLOPT_URL, task->url);
+    curl_easy_setopt(curl, CURLOPT_COOKIE, task->cookie);
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, save_data);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, req->data);
-    
     res = curl_easy_perform(curl);
     
     curl_easy_cleanup(curl);

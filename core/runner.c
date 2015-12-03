@@ -33,14 +33,41 @@ cspider_t *init_cspider() {
   spider->lock = (uv_rwlock_t*)malloc(sizeof(uv_rwlock_t));
   uv_rwlock_init(spider->lock);
   spider->idler->data = spider;
+  spider->site = (site_t*)malloc(sizeof(site_t));
+  spider->site->user_agent = NULL;
+  spider->site->proxy = NULL;
+  spider->site->timeout = 0;
   return spider;
 }
-
-void cs_setopt_url(cspider_t *cspider, char *url, request_t *param, int prior) {
+/*
+ 初始设置要抓取的url
+*/
+void cs_setopt_url(cspider_t *cspider, char *url, char *cookie, int prior){
   assert(cspider != NULL);
   assert(url != NULL);
   assert(prior >= 1 && prior <= 10);
-  createTask(cspider->task_queue, url, param, prior);
+  createTask(cspider->task_queue, url, cookie, prior);
+}
+
+/*
+  设置user agent
+*/
+void cs_setopt_useragent(cspider_t *cspider, char *agent) {
+  ((site_t*)cspider->site)->user_agent = agent;
+}
+
+/*
+  设置proxy
+*/
+void cs_setopt_proxy(cspider_t *cspider, char *proxy) {
+  ((site_t*)cspider->site)->proxy = proxy;
+}
+
+/*
+ 设置超时时间
+*/
+void cs_setopt_timeout(cspider_t *cspider, long timeout) {
+  ((site_t*)cspider->site)->timeout = timeout;
 }
 
 void cs_setopt_process(cspider_t *cspider, void (*process)(cspider_t *, char*)) {
@@ -48,7 +75,7 @@ void cs_setopt_process(cspider_t *cspider, void (*process)(cspider_t *, char*)) 
   cspider->process = process;
 }
 
-void cs_setopt_save(cspider_t *cspider, void (*save)(char*)) {
+void cs_setopt_save(cspider_t *cspider, void (*save)(char*)){
   assert(cspider != NULL);
   cspider->save = save;
 }
