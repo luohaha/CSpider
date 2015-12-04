@@ -31,6 +31,7 @@ struct cs_task_queue_struct {
 */
 struct cs_rawText_struct {
   char *data[BUFFER_MAX_NUMBER];
+  unsigned int each[BUFFER_MAX_NUMBER];
   int count;//数据块的个数
   int length;//数据的长度
   char *type;//数据的类型，比如html，json

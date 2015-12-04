@@ -34,8 +34,8 @@ cspider_t *init_cspider() {
   uv_rwlock_init(spider->lock);
   spider->idler->data = spider;
   spider->site = (site_t*)malloc(sizeof(site_t));
-  spider->site->user_agent = NULL;
-  spider->site->proxy = NULL;
+  spider->site->user_agent = "null";
+  spider->site->proxy = "null";
   spider->site->timeout = 0;
   return spider;
 }

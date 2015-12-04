@@ -8,8 +8,9 @@ size_t save_data(void *ptr, size_t size, size_t nmemb, void *ss) {
   cs_task_t *save = (cs_task_t*)ss;
   
   size_t all = size * nmemb;
-  save->data->data[save->data->count] = (char*)malloc(sizeof(char)*all);
-  strcpy(save->data->data[save->data->count], (char*)ptr);
+  save->data->data[save->data->count] = (char*)malloc(sizeof(char)*all*2);
+  strncpy(save->data->data[save->data->count], (char*)ptr, all);
+  save->data->each[save->data->count] = all;
   save->data->count++;
   save->data->length += all;
   return all;
@@ -25,15 +26,17 @@ void download(uv_work_t *req) {
   curl = curl_easy_init();
   
   if (curl) {
-    if (site->user_agent != NULL) {
-      curl_easy_setopt(curl, CURLOPT_USERAGENT, site->user_agent);
+    if (site->user_agent != "null") {
+      curl_easy_setopt(curl, CURLOPT_USERAGENT, "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.10; rv:42.0) Gecko/20100101 Firefox/42.0");
     }
-    if (site->proxy != NULL) {
+    if (site->proxy != "null") {
       curl_easy_setopt(curl, CURLOPT_PROXY, site->proxy);
     }
     if (site->timeout != 0) {
       curl_easy_setopt(curl, CURLOPT_TIMEOUT_MS, site->timeout);
     }
+    
+    curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1); 
     curl_easy_setopt(curl, CURLOPT_URL, task->url);
     curl_easy_setopt(curl, CURLOPT_COOKIE, task->cookie);
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, save_data);
