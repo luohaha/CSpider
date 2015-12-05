@@ -34,19 +34,27 @@ cspider_t *init_cspider() {
   uv_rwlock_init(spider->lock);
   spider->idler->data = spider;
   spider->site = (site_t*)malloc(sizeof(site_t));
-  spider->site->user_agent = "null";
-  spider->site->proxy = "null";
+  spider->site->user_agent = NULL;
+  spider->site->proxy = NULL;
+  spider->site->cookie = NULL;
   spider->site->timeout = 0;
   return spider;
 }
 /*
  初始设置要抓取的url
 */
-void cs_setopt_url(cspider_t *cspider, char *url, char *cookie, int prior){
+void cs_setopt_url(cspider_t *cspider, char *url, int prior){
   assert(cspider != NULL);
   assert(url != NULL);
   assert(prior >= 1 && prior <= 10);
-  createTask(cspider->task_queue, url, cookie, prior);
+  createTask(cspider->task_queue, url, prior);
+}
+
+/*
+设置cookie
+*/
+void cs_setopt_cookie(cspider_t *cspider, char *cookie) {
+  ((site_t*)cspider->site)->cookie = cookie;
 }
 
 /*

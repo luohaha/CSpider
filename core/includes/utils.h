@@ -19,5 +19,9 @@ typedef struct kv_struct {
 
 char *regex(const char *regex, char *str, int flag);
 
+//xpath.c
+int xpath(char *xml, char *path, char **get);
+int  execute_xpath_expression(const char* filename, const xmlChar* xpathExpr, char** get);
+int print_xpath_nodes(xmlNodeSetPtr nodes, char **get);
 
 #endif

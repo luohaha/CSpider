@@ -9,7 +9,6 @@
 */
 typedef struct cs_task_struct {
   char *url;//存放的url
-  char *cookie;//存放cookie
   int prior;//优先级1~10
   cs_rawText_t *data;//指向任务完成后的数据
   uv_work_t *worker;//指向执行此任务的工作线程的handle
@@ -59,7 +58,7 @@ void freeData(cs_rawText_queue *node);
 /*task.c*/
 int isTaskQueueEmpty(cs_task_queue *head);
 cs_task_queue *initTaskQueue();
-void createTask(cs_task_queue *head, char *url, char *cookie, int prior);
+void createTask(cs_task_queue *head, char *url, int prior);
 cs_task_queue *removeTask(cs_task_queue *head, cs_task_t *task);
 void addTask(cs_task_queue *head, cs_task_queue *task);
 void freeTask(cs_task_queue *node);

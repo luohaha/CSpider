@@ -19,10 +19,9 @@ cs_task_queue *initTaskQueue() {
 /*
 给任务队列添加任务
 */
-void createTask(cs_task_queue *head, char *url, char *cookie, int prior) {
+void createTask(cs_task_queue *head, char *url, int prior) {
   cs_task_t *task = (cs_task_t*)malloc(sizeof(cs_task_t));
   task->url = url;
-  task->cookie = cookie;
   task->prior = prior;
   /*需要先新建一个存放数据的地方*/
   task->data = createData("html");

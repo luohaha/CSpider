@@ -7,8 +7,20 @@
 #include<uv.h>
 #include<assert.h>
 #include<inttypes.h>
+#include<math.h>
+#include<float.h>
+#include<limits.h>
+#include<ctype.h>
 #include<curl/curl.h>
 #include<pcre.h>
+#include<libxml/tree.h>
+#include<libxml/parser.h>
+#include<libxml/xpath.h>
+#include<libxml/xpathInternals.h>
+#include<libxml/HTMLparser.h>
+#include<libxml/HTMLtree.h>
+
+
 
 /*
 保存返回的数据块的最大数目

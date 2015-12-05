@@ -24,8 +24,7 @@ textq *initDataQueue() {
 */
 text *createData(const char* type) {
   text *node = (text*)malloc(sizeof(text));
-  //char *buf = (char*)malloc(sizeof(char));
-  //node->data = buf;
+  
   node->count = 0;
   node->length = 0;
   node->type = type;
@@ -38,8 +37,7 @@ text *createData(const char* type) {
 */
 void addData(textq *head, textq *queue) {
 
-  //textq *queue = (textq*)malloc(sizeof(textq));
-  //queue->data = data;
+  
   queue->next = head;
   queue->prev = head->prev;
   queue->next->prev = queue;
@@ -76,7 +74,7 @@ void freeData(textq *node) {
     //逐个free数据块
     free(node->data->data[i]);
   }
-  //free(node->data->data);
+  
   free(node->data);
   free(node);
 }

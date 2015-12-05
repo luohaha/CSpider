@@ -37,8 +37,8 @@ void saveString(cspider_t *cspider, char *data) {
 /*
   将url加入任务队列的接口
 */
-void addUrl(cspider_t *cspider, char *url, char *cookie, int prior) {
+void addUrl(cspider_t *cspider, char *url, int prior) {
   uv_rwlock_wrlock(cspider->lock);
-  createTask(cspider->task_queue, url, cookie, prior);
+  createTask(cspider->task_queue, url, prior);
   uv_rwlock_wrunlock(cspider->lock);
 }

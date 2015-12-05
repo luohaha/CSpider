@@ -1,7 +1,7 @@
 TARGET=libcspider.dylib
 CC=gcc
-CFLAGS=-ggdb -o0 -W -Wall -I includes -fpic
-LIBFLAG=-luv -lcurl -lpcre
+CFLAGS=-ggdb -o0 -W -Wall -I includes -I /usr/include/libxml2 -fpic
+LIBFLAG=-luv -lcurl -lpcre -lxml2
 C_SOURCES=$(shell find . -name "*.c")
 C_OBJECTS=$(patsubst %.c, %.o, $(C_SOURCES))
 HEADERS=$(shell find . -name "*.h")

@@ -4,6 +4,7 @@
 #include "CS.h"
 #include "downloader.h"
 #include "pageProcesser.h"
+#include "utils.h"
 
 #define DOWNLOAD 1
 #define SAVE     0
@@ -13,6 +14,7 @@
 typedef struct site_struct {
   char *user_agent;//主机信息
   char *proxy;//代理地址
+  char *cookie;//存放cookie
   long timeout;//超时时间
 } site_t;
 
@@ -40,7 +42,8 @@ struct cspider_struct {
 };
 
 cspider_t *init_cspider();
-void cs_setopt_url(cspider_t *cspider, char *url, char *cookie, int prior);
+void cs_setopt_url(cspider_t *cspider, char *url, int prior);
+void cs_setopt_cookie(cspider_t *cspider, char *cookie);
 void cs_setopt_useragent(cspider_t *cspider, char *agent);
 void cs_setopt_proxy(cspider_t *cspider, char *proxy);
 void cs_setopt_timeout(cspider_t *cspider, long timeout);
