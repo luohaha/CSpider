@@ -1,17 +1,21 @@
 #include<cspider/spider.h>
 
 void p(cspider_t *cspider, char *d) {
-  //char *get = regex("http://(.+?).com", "asdfsdfsfdss", REGEX_ALL);
-  //printf("%s\n", get);
-  char *get[100];
-  int size = xpath(d, "//body/div[@class='wrap']/div[@class='sort-column area']/div[@class='column-bd cfix']/ul[@class='st-list cfix']/li/strong/a", get);
+  char *get[10];
+  int i;
+  int size = regexAll("<title>(.+?)</title>", "<title>haha</title><title>jb</title>", get, REGEX_NO_ALL);
+  for (i = 0; i< size; i++)
+  printf("%s\n", get[i]);
+  //char *get[100];
+  //int size = xpath(d, "//body/div[@class='wrap']/div[@class='sort-column area']/div[@class='column-bd cfix']/ul[@class='st-list cfix']/li/strong/a", get);
   //int size = xpath(d, "//title", get);
   //printf("%d\n", size);
+  /*
   int i;
   for (i = 0; i < size; i++) {
     saveString(cspider, get[i]);
   }
-  
+  */
   //saveString(cspider, d);
   
 }
