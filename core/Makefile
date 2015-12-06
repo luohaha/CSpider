@@ -9,10 +9,13 @@ TEMP=$(shell find . -name "*~")
 
 $(TARGET): $(C_OBJECTS)
 	$(CC) -shared -o $(TARGET) $(C_OBJECTS) $(LIBFLAG)
-config:
+install:
 	sudo cp $(TARGET) /usr/lib
 	if [ ! -d "/usr/include/cspider" ]; then sudo mkdir /usr/include/cspider; fi;
 	sudo cp $(HEADERS) /usr/include/cspider
+uninstall:
+	sudo rm -rf /usr/include/cspider
+	sudo rm -f /usr/lib/libcspider.so
 
 %.o: $(C_SOURCES) %.h
 	$(CC) -c $(CFLAGS) $(LIBFLAG)$< -o $@
