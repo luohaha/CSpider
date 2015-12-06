@@ -40,12 +40,16 @@ int main() {
   
   // cs_setopt_url(spider, "so.tv.sohu.com/list_p1100_p20_p3_u5185_u5730_p40_p5_p6_p77_p80_p9_2d1_p101_p11.html", 1);
   cs_setopt_url(spider, "movie.douban.com");
+  cs_setopt_url(spider, "www.baidu.com");
+  cs_setopt_url(spider, "www.sina.com");
+  cs_setopt_url(spider, "www.163.com");
   cs_setopt_useragent(spider, agent);
   //cs_setopt_cookie(spider, cookie);
   cs_setopt_process(spider, p);
   cs_setopt_save(spider, s);
   cs_setopt_threadnum(spider, DOWNLOAD, 2);
   cs_setopt_threadnum(spider, SAVE, 2);
-  
+  //FILE *fp = fopen("log", "wb+");
+  //cs_setopt_logfile(spider, fp);
   return cs_run(spider);
 }

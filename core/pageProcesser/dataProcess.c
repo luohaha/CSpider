@@ -20,6 +20,12 @@ void dataproc(uv_work_t *req) {
 
 void datasave(uv_work_t *req) {
   cspider_t *cspider = ((cs_rawText_t*)req->data)->cspider;
+  //打印到日志
+  if (cspider->log != NULL) {
+    uv_rwlock_wrlock(cspider->log_lock);
+    fprintf(cspider->log, "数据处理完成 : 长度%d字节\n", ((cs_rawText_t*)req->data)->length);
+    uv_rwlock_wrunlock(cspider->log_lock);
+  }
   uv_rwlock_wrlock(cspider->lock);
   cspider->pipeline_thread--;
   cs_rawText_queue *q = removeData(cspider->data_queue_doing, req->data);

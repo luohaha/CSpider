@@ -56,6 +56,12 @@ void download(uv_work_t *req) {
 */
 void work_done(uv_work_t *req, int status) {
   cspider_t *cspider = ((cs_task_t*)req->data)->cspider;
+  //打印到日志
+  if (cspider->log != NULL) {
+    uv_rwlock_wrlock(cspider->log_lock);
+    fprintf(cspider->log, "下载完成 : %s\n", ((cs_task_t*)req->data)->url);
+    uv_rwlock_wrunlock(cspider->log_lock);
+  }
   uv_rwlock_wrlock(cspider->lock);
   cspider->download_thread--;
   cs_task_queue *q = removeTask(cspider->task_queue_doing, req->data);

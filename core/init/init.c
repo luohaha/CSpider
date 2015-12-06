@@ -38,6 +38,7 @@ cspider_t *init_cspider() {
   spider->site->proxy = NULL;
   spider->site->cookie = NULL;
   spider->site->timeout = 0;
+  spider->log = NULL;
   return spider;
 }
 /*
@@ -75,6 +76,14 @@ void cs_setopt_proxy(cspider_t *cspider, char *proxy) {
 */
 void cs_setopt_timeout(cspider_t *cspider, long timeout) {
   ((site_t*)cspider->site)->timeout = timeout;
+}
+/*
+  设置日志
+*/
+void cs_setopt_logfile(cspider_t *cspider, FILE *log) {
+  cspider->log = log;
+  cspider->log_lock = (uv_rwlock_t*)malloc(sizeof(uv_rwlock_t));
+  uv_rwlock_init(cspider->log_lock);
 }
 
 void cs_setopt_process(cspider_t *cspider, void (*process)(cspider_t *, char*)) {
