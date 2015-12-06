@@ -13,6 +13,6 @@ void datasave(uv_work_t *req);
   用户接口
 */
 void saveString(cspider_t *cspider, void *data);
-void addUrl(cspider_t *cspider, char *url, int prior);
+void addUrl(cspider_t *cspider, char *url);
 
 #endif

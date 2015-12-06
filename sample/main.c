@@ -3,7 +3,7 @@
 void p(cspider_t *cspider, char *d) {
   char *get[100];
   int i;
-  int size = regexAll("href=\"(.+?)\"", d, get, 100, REGEX_ALL);
+  int size = regexAll("href=\"(.+?)\"", d, get, 100, REGEX_NO_ALL);
   
   for (int i = 0; i < size; i++) {
     saveString(cspider, get[i]);
@@ -39,7 +39,7 @@ int main() {
   char *cookie = "bid=s3/yuH5Jd/I; ll=108288; viewed=1130500_24708145_6433169_4843567_1767120_5318823_1899158_1271597; __utma=30149280.927537245.1446813674.1446983217.1449139583.4; __utmz=30149280.1449139583.4.4.utmcsr=accounts.douban.com|utmccn=(referral)|utmcmd=referral|utmcct=/login; ps=y; ue=965166527@qq.com; dbcl2=58742090:QgZ2PSLiDLQ; ck=T9Wn; push_noty_num=0; push_doumail_num=7; ap=1; __utmb=30149280.0.10.1449139583; __utmc=30149280";
   
   // cs_setopt_url(spider, "so.tv.sohu.com/list_p1100_p20_p3_u5185_u5730_p40_p5_p6_p77_p80_p9_2d1_p101_p11.html", 1);
-  cs_setopt_url(spider, "movie.douban.com", 1);
+  cs_setopt_url(spider, "movie.douban.com");
   cs_setopt_useragent(spider, agent);
   //cs_setopt_cookie(spider, cookie);
   cs_setopt_process(spider, p);

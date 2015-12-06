@@ -43,11 +43,10 @@ cspider_t *init_cspider() {
 /*
  初始设置要抓取的url
 */
-void cs_setopt_url(cspider_t *cspider, char *url, int prior){
+void cs_setopt_url(cspider_t *cspider, char *url){
   assert(cspider != NULL);
   assert(url != NULL);
-  assert(prior >= 1 && prior <= 10);
-  createTask(cspider->task_queue, url, prior);
+  createTask(cspider->task_queue, url);
 }
 
 /*

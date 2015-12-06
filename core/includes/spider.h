@@ -42,7 +42,7 @@ struct cspider_struct {
 };
 
 cspider_t *init_cspider();
-void cs_setopt_url(cspider_t *cspider, char *url, int prior);
+void cs_setopt_url(cspider_t *cspider, char *url);
 void cs_setopt_cookie(cspider_t *cspider, char *cookie);
 void cs_setopt_useragent(cspider_t *cspider, char *agent);
 void cs_setopt_proxy(cspider_t *cspider, char *proxy);
