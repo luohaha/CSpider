@@ -8,8 +8,6 @@
 
 #define DOWNLOAD 1
 #define SAVE     0
-#define POST 1
-#define GET 0
 
 typedef struct site_struct {
   char *user_agent;//主机信息

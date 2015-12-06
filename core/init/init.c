@@ -98,6 +98,7 @@ void cs_setopt_save(cspider_t *cspider, void (*save)(void*)){
 
 void cs_setopt_threadnum(cspider_t *cspider, int flag, int number) {
   assert(flag == DOWNLOAD || flag == SAVE);
+  assert(number > 0);
   if (flag == DOWNLOAD) {
     cspider->download_thread_max = number;
   } else {
