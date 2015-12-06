@@ -5,10 +5,10 @@ c语言实现的易用的高效的网络爬虫框架:)。
 
 ##安装与使用方法：
 1. 确认你的电脑中，已经安装下面的库：  
-	* curl
-	* libuv
-	* libxml2
-	* pcre
+	* [curl](https://github.com/bagder/curl)
+	* [libuv](https://github.com/libuv/libuv)
+	* [libxml2](http://xmlsoft.org/index.html)
+	* [pcre](http://www.pcre.org)
 2. 进入`core`文件夹，编译文件，命令如下：  
 ```
 make
@@ -25,6 +25,9 @@ gcc -o test test.c -lcspider -I /usr/include/libxml2
 >其中，`-lcspider`将链接我们上述编译完成的cspider动态链接库，而`-I /usr/include/libxml2`则是让编译器能够找到libxml2库的头文件，当然你最好使用Makefile文件。  
 
 ##API
+
+###初始化设置
+
 * `cspider_t *init_cspider()`  
 	在程序一开始的时候，获取到`cspider_t`变量。是必不可少的函数。  
 	
@@ -57,12 +60,42 @@ gcc -o test test.c -lcspider -I /usr/include/libxml2
 	
 * `int cs_run(cspider_t *)`  
 	启动cspider的函数，在程序的最后调用。  
+
+###自定义函数部分
 	
 * `void saveString(cspider_t *, char *)`  
 	在自定义的解析函数中，可以调用此函数。数据持久化，将字符串传入自定义的数据持久化函数。  
 	
 * `void addUrl(cspider_t *cspider, char *url)`  
 	在自定义的解析函数中，调用此函数。可以将解析获取到的url，再次加入任务队列。
+
+###解析工具API
+
+1. 正则表达式：  
+
+	* `int regexAll(const char *regex, char *str, char **res, int num, int flag);`  
+	regex : 正则匹配的规则  
+	str : 待匹配的字符串  
+	res : 返回的字符串数组
+	num : 返回的字符串数组的大小
+	flag : 可为`REGEX_ALL`和`REGEX_NO_ALL`，输出全部，或者只是匹配的部分。  
+	返回获取的字符串的个数
+	
+	* `int match(char *regex, char *str);`  
+	是否匹配。返回1表示成功，返回0标示失败。  
+	
+2. xpath解析html和xml
+
+	* `int xpath(char *xml, char *path, char **get);`  
+	xml : 待匹配的字符串  
+	path : xpath规则  
+	get : 保存返回字符串的数组   
+	返回获取的字符串的个数 
+	
+3. 解析json
+
+	cspider里集成了cJSON库，可以非常方便地解析json。具体的使用方法，请看[这里](https://github.com/kbranigan/cJSON)。
+
 	
 ##使用例子
 输出乐视电影页面，第一页的所有电影名称。  
