@@ -2,8 +2,8 @@
 
 void p(cspider_t *cspider, char *d) {
   
-  char *get[100];
-  int size = xpath(d, "//body/div[@class='wrap']/div[@class='sort-column area']/div[@class='column-bd cfix']/ul[@class='st-list cfix']/li/strong/a", get);
+  char *get[10];
+  int size = xpath(d, "//body/div[@class='wrap']/div[@class='sort-column area']/div[@class='column-bd cfix']/ul[@class='st-list cfix']/li/strong/a", get, 10);
     
   int i;
   for (i = 0; i < size; i++) {

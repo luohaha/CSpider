@@ -20,8 +20,8 @@ typedef struct kv_struct {
 int regexAll(const char *regex, char *str, char **res, int num, int flag);
 int match(char *regex, char *str);
 //xpath.c
-int xpath(char *xml, char *path, char **get);
-int  execute_xpath_expression(const char* filename, const xmlChar* xpathExpr, char** get);
-int print_xpath_nodes(xmlNodeSetPtr nodes, char **get);
+int xpath(char *xml, char *path, char **get, int num);
+int  execute_xpath_expression(const char* filename, const xmlChar* xpathExpr, char** get, int num);
+int print_xpath_nodes(xmlNodeSetPtr nodes, char **get, int num);
 
 #endif

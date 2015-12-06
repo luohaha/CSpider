@@ -4,19 +4,19 @@
   xml : 待解析的文件
   path : 解析该文件的xpath法制
 */
-int xpath(char *xml, char *path, char **get) { 
+int xpath(char *xml, char *path, char **get, int num) { 
 
   int size;
     /* Init libxml */     
     xmlInitParser();
-    LIBXML_TEST_VERSION
+    //LIBXML_TEST_VERSION
 
     /* Do the main job */
-      size = execute_xpath_expression(xml, BAD_CAST path, get);
+    size = execute_xpath_expression(xml, BAD_CAST path, get, num);
       if(size == -1) {
 	
 	return -1;
-    }
+      }
 
     /* Shutdown libxml */
     xmlCleanupParser();
@@ -40,7 +40,7 @@ int xpath(char *xml, char *path, char **get) {
  *
  * Returns 0 on success and a negative value otherwise.
  */
-int execute_xpath_expression(const char* filename, const xmlChar* xpathExpr, char **get) {
+int execute_xpath_expression(const char* filename, const xmlChar* xpathExpr, char **get, int num) {
     xmlDocPtr doc;
     xmlXPathContextPtr xpathCtx; 
     xmlXPathObjectPtr xpathObj; 
@@ -77,7 +77,7 @@ int execute_xpath_expression(const char* filename, const xmlChar* xpathExpr, cha
     }
 
     /* Print results */
-    int size = print_xpath_nodes(xpathObj->nodesetval, get);
+    int size = print_xpath_nodes(xpathObj->nodesetval, get, num);
 
     /* Cleanup */
     xmlXPathFreeObject(xpathObj);
@@ -95,7 +95,7 @@ int execute_xpath_expression(const char* filename, const xmlChar* xpathExpr, cha
  *
  * Prints the @nodes content to @output.
  */
-int print_xpath_nodes(xmlNodeSetPtr nodes, char **get) {
+int print_xpath_nodes(xmlNodeSetPtr nodes, char **get, int num) {
     xmlNodePtr cur;
     int size;
     int i;
@@ -104,7 +104,7 @@ int print_xpath_nodes(xmlNodeSetPtr nodes, char **get) {
     size = (nodes) ? nodes->nodeNr : 0;
     
     //fprintf(output, "Result (%d nodes):\n", size);
-    for(i = 0; i < size; ++i) {
+    for(i = 0; i < size && i < num; ++i) {
         get[i] = (char*)malloc(sizeof(char));
 	assert(nodes->nodeTab[i]);
 	cur = (xmlNodePtr)nodes->nodeTab[i];
@@ -112,7 +112,7 @@ int print_xpath_nodes(xmlNodeSetPtr nodes, char **get) {
 	get[i] = xmlNodeGetContent(cur);
     }
 
-    return size;
+    return (size<num)?size:num;
 }
 
 /*
