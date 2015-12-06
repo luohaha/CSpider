@@ -1,4 +1,4 @@
-TARGET=libcspider.dylib
+TARGET=libcspider.so
 CC=gcc
 CFLAGS=-ggdb -o0 -W -Wall -I includes -I /usr/include/libxml2 -fpic
 LIBFLAG=-luv -lcurl -lpcre -lxml2

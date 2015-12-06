@@ -83,7 +83,7 @@ void cs_setopt_process(cspider_t *cspider, void (*process)(cspider_t *, char*)) 
   cspider->process = process;
 }
 
-void cs_setopt_save(cspider_t *cspider, void (*save)(char*)){
+void cs_setopt_save(cspider_t *cspider, void (*save)(void*)){
   assert(cspider != NULL);
   cspider->save = save;
 }

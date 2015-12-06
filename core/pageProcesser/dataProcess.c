@@ -31,7 +31,7 @@ void datasave(uv_work_t *req) {
 /*
   数据持久化的接口
 */
-void saveString(cspider_t *cspider, char *data) {
+void saveString(cspider_t *cspider, void *data) {
   (cspider->save)(data);
 }
 /*
