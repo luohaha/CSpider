@@ -4,20 +4,20 @@
 c语言实现的易用的高效的网络爬虫框架:)。
 
 ##安装与使用方法：
-1. 确认你的电脑中，已经安装下面的库：  
+* 确认你的电脑中，已经安装下面的库：  
 	* [curl](https://github.com/bagder/curl)
 	* [libuv](https://github.com/libuv/libuv)
 	* [libxml2](http://xmlsoft.org/index.html)
 	* [pcre](http://www.pcre.org)
-2. 进入`core`文件夹，编译文件，命令如下：  
+* 进入`core`文件夹，编译文件，命令如下：  
 ```
 make
 ```
-3. 接着要配置动态库，将`.so`文件和`.h`文件移动到相应的位置，命令如下:  
+* 接着要配置动态库，将`.so`文件和`.h`文件移动到相应的位置，命令如下:  
 ```
 make install
 ```
-4. 这时，就可以开始编译你写好的文件（例如 `test.c`），命令如下:  
+* 这时，就可以开始编译你写好的文件（例如 `test.c`），命令如下:  
 ```
 gcc -o test test.c -lcspider -I /usr/include/libxml2
 ```
