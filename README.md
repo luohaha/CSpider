@@ -76,8 +76,8 @@ gcc -o test test.c -lcspider -I /usr/include/libxml2
 	* `int regexAll(const char *regex, char *str, char **res, int num, int flag);`  
 	regex : 正则匹配的规则  
 	str : 待匹配的字符串  
-	res : 返回的字符串数组
-	num : 返回的字符串数组的大小
+	res : 用来保存返回的字符串的数组  
+	num : res数组的大小  
 	flag : 可为`REGEX_ALL`和`REGEX_NO_ALL`，输出全部，或者只是匹配的部分。  
 	返回获取的字符串的个数
 	
@@ -86,10 +86,11 @@ gcc -o test test.c -lcspider -I /usr/include/libxml2
 	
 2. xpath解析html和xml
 
-	* `int xpath(char *xml, char *path, char **get);`  
+	* `int xpath(char *xml, char *path, char **get, int num);`  
 	xml : 待匹配的字符串  
 	path : xpath规则  
 	get : 保存返回字符串的数组   
+	num : get数组的大小  
 	返回获取的字符串的个数 
 	
 3. 解析json
