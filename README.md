@@ -49,11 +49,11 @@ gcc -o test test.c -lcspider -I /usr/include/libxml2
 * `void cs_setopt_logfile(cspider_t *, FILE *)`  
 	设置输出日志的打印文件，可选项。不设置，则不会输出日志。  
 	
-* `void cs_setopt_process(cspider_t *, void (*process)(cspider_t *, char*))`
-	设置解析函数，解析函数的第二个参数为抓取到的完整的数据字符串。
+* `void cs_setopt_process(cspider_t *, void (*process)(cspider_t *, char*, void *), void *)`
+	设置解析函数process，解析函数process的第二个参数为抓取到的完整的数据字符串，第三个参数void*指向用户自定义的上下文信息。该上下文指针通过`cs_setopt_process`的第三个参数来设置。
 	
-* `void cs_setopt_save(cspider_t *, void (*save)(void*))`  
-	设置数据持久化函数。
+* `void cs_setopt_save(cspider_t *, void (*save)(void*, void*), void*)`  
+	设置数据持久化函数save，save的参数中第一个指针指向解析函数传入的信息，第二个指针指向用户自定义的上下文信息。该上下文指针同样通过`cs_setopt_save`的第三个参数来设置。
 	
 * `void cs_setopt_threadnum(cspider_t *cspider, int , int )`  
 	设置线程的数量，其中，第二个参数，可以传入`DOWNLOAD`与`SAVE`，分别表示，将要设置下载线程的数量，或是解析与保存线程的数量。第三个参数为要设置的线程的数量。可选项，默认的线程数量均为5个。  
@@ -107,7 +107,7 @@ gcc -o test test.c -lcspider -I /usr/include/libxml2
 /*
 	自定义的解析函数，d为获取到的html页面字符串
 */
-void p(cspider_t *cspider, char *d) {
+void p(cspider_t *cspider, char *d, void *user_data) {
   
   char *get[100];
   //xpath解析html
@@ -123,9 +123,10 @@ void p(cspider_t *cspider, char *d) {
 /*
 	数据持久化函数，对上面解析函数中调用的saveString()函数传入的数据，进行进一步的保存
 */
-void s(void *str) {
+void s(void *str, void *user_data) {
   char *get = (char *)str;
-  printf("%s\n", get);
+  FILE *file = (FILE*)user_data;
+  fprintf(file, "%s\n", get);
   return;
 }
 
@@ -141,8 +142,9 @@ int main() {
   cs_setopt_useragent(spider, agent);
   //cs_setopt_cookie(spider, cookie);
   //传入解析函数和数据持久化函数的指针
-  cs_setopt_process(spider, p);
-  cs_setopt_save(spider, s);
+  cs_setopt_process(spider, p, NULL);
+  //s函数的user_data指针指向stdout
+  cs_setopt_save(spider, s, stdout);
   //设置线程数量
   cs_setopt_threadnum(spider, DOWNLOAD, 2);
   cs_setopt_threadnum(spider, SAVE, 2);
