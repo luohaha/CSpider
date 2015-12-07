@@ -1,6 +1,6 @@
 #include<cspider/spider.h>
 
-void p(cspider_t *cspider, char *d) {
+void p(cspider_t *cspider, char *d, void *user_data) {
   
   char *get[10];
   int size = xpath(d, "//body/div[@class='wrap']/div[@class='sort-column area']/div[@class='column-bd cfix']/ul[@class='st-list cfix']/li/strong/a", get, 10);
@@ -12,9 +12,10 @@ void p(cspider_t *cspider, char *d) {
   
 }
 
-void s(void *str) {
+void s(void *str, void *user_data) {
   char *get = (char *)str;
-  printf("%s\n", get);
+  FILE *file = (FILE*)user_data;
+  fprintf(file, "%s\n", get);
   return;
 }
 
@@ -28,8 +29,8 @@ int main() {
   
   cs_setopt_useragent(spider, agent);
   //cs_setopt_cookie(spider, cookie);
-  cs_setopt_process(spider, p);
-  cs_setopt_save(spider, s);
+  cs_setopt_process(spider, p, NULL);
+  cs_setopt_save(spider, s, stdout);
   cs_setopt_threadnum(spider, DOWNLOAD, 2);
   cs_setopt_threadnum(spider, SAVE, 2);
   //FILE *fp = fopen("log", "wb+");

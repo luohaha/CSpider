@@ -14,7 +14,7 @@ void dataproc(uv_work_t *req) {
   }
   *(get+currentCount) = '\0';
   //得到了数据get
-  (cspider->process)(cspider, get);
+  (cspider->process)(cspider, get, cspider->process_user_data);
   free(get);
 }
 
@@ -38,7 +38,7 @@ void datasave(uv_work_t *req) {
   数据持久化的接口
 */
 void saveString(cspider_t *cspider, void *data) {
-  (cspider->save)(data);
+  (cspider->save)(data, cspider->save_user_data);
 }
 /*
   将url加入任务队列的接口

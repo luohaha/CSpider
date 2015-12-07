@@ -25,6 +25,8 @@ cspider_t *init_cspider() {
   spider->pipeline_thread = 1;
   spider->process = NULL;
   spider->save = NULL;
+  spider->process_user_data = NULL;
+  spider->save_user_data = NULL;
   spider->loop = uv_default_loop();
   spider->task_queue_doing = initTaskQueue();
   spider->data_queue = initDataQueue();
@@ -86,14 +88,16 @@ void cs_setopt_logfile(cspider_t *cspider, FILE *log) {
   uv_rwlock_init(cspider->log_lock);
 }
 
-void cs_setopt_process(cspider_t *cspider, void (*process)(cspider_t *, char*)) {
+void cs_setopt_process(cspider_t *cspider, void (*process)(cspider_t *, char*, void*), void *user_data) {
   assert(cspider != NULL);
   cspider->process = process;
+  cspider->process_user_data = user_data;
 }
 
-void cs_setopt_save(cspider_t *cspider, void (*save)(void*)){
+void cs_setopt_save(cspider_t *cspider, void (*save)(void*, void*), void *user_data){
   assert(cspider != NULL);
   cspider->save = save;
+  cspider->save_user_data = user_data;
 }
 
 void cs_setopt_threadnum(cspider_t *cspider, int flag, int number) {
