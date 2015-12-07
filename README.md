@@ -111,7 +111,7 @@ void p(cspider_t *cspider, char *d) {
   
   char *get[100];
   //xpath解析html
-  int size = xpath(d, "//body/div[@class='wrap']/div[@class='sort-column area']/div[@class='column-bd cfix']/ul[@class='st-list cfix']/li/strong/a", get);
+  int size = xpath(d, "//body/div[@class='wrap']/div[@class='sort-column area']/div[@class='column-bd cfix']/ul[@class='st-list cfix']/li/strong/a", get， 100);
     
   int i;
   for (i = 0; i < size; i++) {
