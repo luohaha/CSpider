@@ -5,6 +5,7 @@
 #include "downloader.h"
 #include "pageProcesser.h"
 #include "utils.h"
+#include "cJSON.h"
 
 #define DOWNLOAD 1
 #define SAVE     0
