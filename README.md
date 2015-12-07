@@ -49,7 +49,7 @@ gcc -o test test.c -lcspider -I /usr/include/libxml2
 * `void cs_setopt_logfile(cspider_t *, FILE *)`  
 	设置输出日志的打印文件，可选项。不设置，则不会输出日志。  
 	
-* `void cs_setopt_process(cspider_t *, void (*process)(cspider_t *, char*, void *), void *)`
+* `void cs_setopt_process(cspider_t *, void (*process)(cspider_t *, char*, void *), void *)`   
 	设置解析函数process，解析函数process的第二个参数为抓取到的完整的数据字符串，第三个参数void*指向用户自定义的上下文信息。该上下文指针通过`cs_setopt_process`的第三个参数来设置。
 	
 * `void cs_setopt_save(cspider_t *, void (*save)(void*, void*), void*)`  
