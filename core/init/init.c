@@ -111,7 +111,14 @@ void cs_setopt_threadnum(cspider_t *cspider, int flag, int number) {
 }
 
 int cs_run(cspider_t *cspider) {
-  
+  if (cspider->process == NULL) {
+    printf("warn : 需要设置解析函数(使用cs_setopt_process)\n");
+    return 0;
+  }
+  if (cspider->save == NULL) {
+    printf("warn : 需要设置数据持久化函数(使用cs_setopt_save)\n");
+    return 0;
+  }
   uv_idle_init(cspider->loop, cspider->idler);
   uv_idle_start(cspider->idler, watcher);
   
