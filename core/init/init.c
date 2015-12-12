@@ -34,6 +34,8 @@ cspider_t *init_cspider() {
   spider->idler = (uv_idle_t*)malloc(sizeof(uv_idle_t));
   spider->lock = (uv_rwlock_t*)malloc(sizeof(uv_rwlock_t));
   uv_rwlock_init(spider->lock);
+  spider->save_lock = (uv_rwlock_t*)malloc(sizeof(uv_rwlock_t));
+  uv_rwlock_init(spider->save_lock);
   spider->idler->data = spider;
   spider->site = (site_t*)malloc(sizeof(site_t));
   spider->site->user_agent = NULL;

@@ -38,7 +38,9 @@ void datasave(uv_work_t *req) {
   数据持久化的接口
 */
 void saveString(cspider_t *cspider, void *data) {
+  uv_rwlock_wrlock(cspider->save_lock);
   (cspider->save)(data, cspider->save_user_data);
+  uv_rwlock_wrunlock(cspider->save_lock);
 }
 /*
   将url加入任务队列的接口

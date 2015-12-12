@@ -39,6 +39,8 @@ struct cspider_struct {
   int pipeline_thread;
   //锁
   uv_rwlock_t *lock;
+  //数据持久化的锁
+  uv_rwlock_t *save_lock;
   //爬虫的信息，包括useragent, cookie, timeout, proxy
   site_t *site;
   //输出日志的文件地址
