@@ -1,20 +1,9 @@
 #include "spider.h"
 #include "downloader.h"
 
-//uv_loop_t *loop;
-//uv_idle_t *idler;
 /*
-存放数据池的队列
+  init the cspider
 */
-//cs_rawText_queue *data_queue;
-/*
-存放未执行的任务的队列
-*/
-//cs_task_queue *task_queue;
-/*
-存放正在执行的任务的队列
-*/
-//cs_task_queue *task_queue_doing;
 
 cspider_t *init_cspider() {
   cspider_t *spider = (cspider_t *)malloc(sizeof(cspider_t));

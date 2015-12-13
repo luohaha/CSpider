@@ -18,7 +18,7 @@ void dataproc(uv_work_t *req) {
   free(get);
 }
 
-void datasave(uv_work_t *req) {
+void datasave(uv_work_t *req, int status) {
   cspider_t *cspider = ((cs_rawText_t*)req->data)->cspider;
   //打印到日志
   if (cspider->log != NULL) {
@@ -34,19 +34,3 @@ void datasave(uv_work_t *req) {
   uv_rwlock_wrunlock(cspider->lock);
 }
 
-/*
-  数据持久化的接口
-*/
-void saveString(cspider_t *cspider, void *data) {
-  uv_rwlock_wrlock(cspider->save_lock);
-  (cspider->save)(data, cspider->save_user_data);
-  uv_rwlock_wrunlock(cspider->save_lock);
-}
-/*
-  将url加入任务队列的接口
-*/
-void addUrl(cspider_t *cspider, char *url) {
-  uv_rwlock_wrlock(cspider->lock);
-  createTask(cspider->task_queue, url);
-  uv_rwlock_wrunlock(cspider->lock);
-}

@@ -1,4 +1,5 @@
 #include "downloader.h"
+#include "pageProcesser.h"
 
 /*
 判断任务队列是否为空
@@ -23,7 +24,7 @@ void createTask(cs_task_queue *head, char *url) {
   cs_task_t *task = (cs_task_t*)malloc(sizeof(cs_task_t));
   task->url = url;
   /*需要先新建一个存放数据的地方*/
-  task->data = createData("html");
+  task->data = createData();
   cs_task_queue *queue = (cs_task_queue*)malloc(sizeof(cs_task_queue));
   queue->task = task;
   queue->next = head;

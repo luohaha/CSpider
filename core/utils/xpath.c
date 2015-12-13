@@ -109,7 +109,7 @@ int print_xpath_nodes(xmlNodeSetPtr nodes, char **get, int num) {
 	assert(nodes->nodeTab[i]);
 	cur = (xmlNodePtr)nodes->nodeTab[i];
 	//printf("key : %s \n value : %s\n", cur->name, xmlNodeGetContent(cur));
-	get[i] = xmlNodeGetContent(cur);
+	get[i] = (char*)xmlNodeGetContent(cur);
     }
 
     return (size<num)?size:num;

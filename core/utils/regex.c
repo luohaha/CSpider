@@ -15,7 +15,6 @@ int regexAll(const char *regex, char *str, char **res, int num, int flag) {
   const char *errptr;
   //错误位置
   int erroffset;
-  pcre *code;
   int ovector[30];
   //匹配到的结果数量
   int rc;
@@ -51,12 +50,11 @@ int regexAll(const char *regex, char *str, char **res, int num, int flag) {
   正则，是否匹配
 */
 int match(char *regex, char *str) {
- pcre *re;
+  pcre *re;
   //错误信息
   const char *errptr;
   //错误位置
   int erroffset;
-  pcre *code;
   int ovector[30];
   //匹配到的结果数量
   int rc;

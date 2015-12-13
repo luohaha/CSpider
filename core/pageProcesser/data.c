@@ -1,7 +1,12 @@
-#include "downloader.h"
+#include "pageProcesser.h"
 #define textq cs_rawText_queue
 #define text  cs_rawText_t
+/*
+data.c provide some functions to handle cs_rawText_t, 
+such as create, insert, delete and so on.
 
+
+*/
 /*
   判断数据队列是否未空
 */
@@ -22,12 +27,11 @@ textq *initDataQueue() {
 /*
   创建节点
 */
-text *createData(const char* type) {
+text *createData() {
   text *node = (text*)malloc(sizeof(text));
   
   node->count = 0;
   node->length = 0;
-  node->type = type;
   
   return node;
 }
