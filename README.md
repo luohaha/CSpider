@@ -15,13 +15,13 @@ A scalable and convenient crawler framework base on C:).
 make
 ```
 
-* move `.so` and `.h` files to relevant directory:  
+* Move `.so` and `.h` files to relevant directory:  
 
 ```
 make install
 ```
 
-* finally, you could compile your code(such as `test.c`) using `-lcspider`:  
+* Finally, you could compile your code(such as `test.c`) using `-lcspider`:  
 
 ```
 gcc -o test test.c -lcspider -I /usr/include/libxml2
@@ -51,7 +51,7 @@ gcc -o test test.c -lcspider -I /usr/include/libxml2
 	Passing timeout value(ms) to second param. Optional.
 	
 * `void cs_setopt_logfile(cspider_t *, FILE *)`  
-	Passing file pointer to second param, which is used to print log information.  
+	Passing file pointer to second param, which is used to print log information. Optional. 
 	
 * `void cs_setopt_process(cspider_t *, void (*process)(cspider_t *, char*, void *), void *)`   
 	Passing process function to second param, and user's costom context pointer to third param. You could use this costom context in process function's third param and string which is downloaded in second param.
