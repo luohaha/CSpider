@@ -1,7 +1,7 @@
 # CSpider
 
 A scalable and convenient crawler framework base on C:).  
-[中文文档](https://github.com/luohaha/CSpider/wiki/中文文档)
+[中文文档.](https://github.com/luohaha/CSpider/wiki/中文文档)
 
 ##INSTALL
 * Make sure you have installed these libs already.
