@@ -1,14 +1,8 @@
 #include<cspider/spider.h>
 
 void p(cspider_t *cspider, char *d, void *user_data) {
-  
-  char *get[100];
-  int size = xpath(d, "//div[@id='listofficial']/div[@class='yk-row yk-v-80']/div[@class='yk-col3']/div[@class='p p-small']/div[@class='p-meta pa']/div[@class='p-meta-title']/a/@title", get, 100);
-  
-  int i;
-  for (i = 0; i < size; i++) {
-    saveString(cspider, get[i]);
-  }
+
+  saveString(cspider, d);
   
 }
 
@@ -23,7 +17,7 @@ int main() {
   cspider_t *spider = init_cspider(); 
   char *agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.10; rv:42.0) Gecko/20100101 Firefox/42.0";
   
-  cs_setopt_url(spider, "http://www.youku.com/v_olist/c_96_s_0_d_0_g_0_a_0_r_0_u_0_pt_0_av_0_ag_0_sg_0_mt_0_lg_0_q_0_pr_0_h_0_p_1.html");
+  cs_setopt_url(spider, "github.com");
   
   cs_setopt_useragent(spider, agent);
   //指向自定义的解析函数，和数据持久化函数
