@@ -67,7 +67,7 @@ gcc -o test test.c -lcspider -I /usr/include/libxml2
 	
 ###More functions
 
-* `void saveString(cspider_t *, char *)`  
+* `void saveString(cspider_t *, void *)`  
 	Using this function in costom process function could pass data pointer to costom data persistence function. 
 	
 * `void addUrl(cspider_t *cspider, char *url)`  
@@ -90,10 +90,10 @@ gcc -o test test.c -lcspider -I /usr/include/libxml2
 	
 2. Using xpath to deal with html and xml:
 
-	* `int xpath(char *xml, char *path, char **get, int num);`  
+	* `int xpath(char *xml, char *path, char **res, int num);`  
 	xml : prepared to parse.  
 	path : xpath's rule.  
-	get : array used for saving strings.   
+	res : array used for saving strings.   
 	num : array's size.  
 	This function returns the number of array which we get.  
 	
