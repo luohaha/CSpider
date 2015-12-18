@@ -3,12 +3,16 @@
 
 /*
 判断任务队列是否为空
+
+is task queue empty?
 */
 int isTaskQueueEmpty(cs_task_queue *head) {
   return (head->next == head);
 }
 /*
 初始化任务队列
+
+return the initializing queue
 */
 cs_task_queue *initTaskQueue() {
   cs_task_queue *new_queue = (cs_task_queue*)malloc(sizeof(cs_task_queue));
@@ -19,6 +23,8 @@ cs_task_queue *initTaskQueue() {
 }
 /*
 给任务队列添加任务
+
+add a task to task queue
 */
 void createTask(cs_task_queue *head, char *url) {
   cs_task_t *task = (cs_task_t*)malloc(sizeof(cs_task_t));
@@ -35,6 +41,8 @@ void createTask(cs_task_queue *head, char *url) {
 }
 /*
 将任务移除出队列
+
+remove the task from the task queue
 */
 cs_task_queue *removeTask(cs_task_queue *head, cs_task_t *task) {
   cs_task_queue *p = head->next;
@@ -54,6 +62,8 @@ cs_task_queue *removeTask(cs_task_queue *head, cs_task_t *task) {
 }
 /*
   将已有任务加入队列
+
+  add a task into queue
 */
 void addTask(cs_task_queue *head, cs_task_queue *task) {
   task->next = head;
@@ -64,6 +74,8 @@ void addTask(cs_task_queue *head, cs_task_queue *task) {
 }
 /*
 回收任务队列节点
+
+free the task queue
 */
 void freeTask(cs_task_queue *node) {
   free(node->task->worker);

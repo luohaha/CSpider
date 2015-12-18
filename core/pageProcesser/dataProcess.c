@@ -1,9 +1,13 @@
 #include "pageProcesser.h"
 
+/*
+  process data
+*/
 void dataproc(uv_work_t *req) {
   cspider_t *cspider = ((cs_rawText_t*)req->data)->cspider;
   cs_rawText_t *text = (cs_rawText_t*)req->data;
   //将buffer链表中的数据取出，统一存放在一个字符串中
+  //Put all buffer's data into a string
   char *get = (char*)malloc(sizeof(char) * text->length+1);
   assert(get != NULL);
   int i;
@@ -21,9 +25,10 @@ void dataproc(uv_work_t *req) {
 void datasave(uv_work_t *req, int status) {
   cspider_t *cspider = ((cs_rawText_t*)req->data)->cspider;
   //打印到日志
+  // print to log
   if (cspider->log != NULL) {
     uv_rwlock_wrlock(cspider->log_lock);
-    fprintf(cspider->log, "数据处理完成 : 长度%d字节\n", ((cs_rawText_t*)req->data)->length);
+    fprintf(cspider->log, "data processing finish : lenght %d bytes\n", ((cs_rawText_t*)req->data)->length);
     uv_rwlock_wrunlock(cspider->log_lock);
   }
   uv_rwlock_wrlock(cspider->lock);

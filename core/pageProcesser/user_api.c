@@ -7,6 +7,7 @@
 */
 /*
   数据持久化的接口
+  api of data persistence
 */
 void saveString(cspider_t *cspider, void *data) {
   uv_rwlock_wrlock(cspider->save_lock);
@@ -15,6 +16,7 @@ void saveString(cspider_t *cspider, void *data) {
 }
 /*
   将url加入任务队列的接口
+  add url back to task queue
 */
 void addUrl(cspider_t *cspider, char *url) {
   uv_rwlock_wrlock(cspider->lock);

@@ -9,12 +9,15 @@ such as create, insert, delete and so on.
 */
 /*
   判断数据队列是否未空
+  is data queue empty?
 */
 int isDataQueueEmpty(cs_rawText_queue *head) {
   return (head->next == head);
 }
 /*
 新建头节点
+
+return initial data queue
 */
 textq *initDataQueue() {
   textq *queue = (textq*) malloc(sizeof(textq));
@@ -26,6 +29,8 @@ textq *initDataQueue() {
 
 /*
   创建节点
+
+  create data struct
 */
 text *createData() {
   text *node = (text*)malloc(sizeof(text));
@@ -38,6 +43,8 @@ text *createData() {
 
 /*
   将获取到的数据加入队列
+
+  add data into data queue
 */
 void addData(textq *head, textq *queue) {
 
@@ -50,6 +57,8 @@ void addData(textq *head, textq *queue) {
 }
 /*
   从队列中取出数据
+
+  remove data from data queue
 */
 textq *removeData(textq *head, text *data) {
   textq *p = head->next;
@@ -70,12 +79,15 @@ textq *removeData(textq *head, text *data) {
 }
 /*
 回收数据
+
+free data queue
 */
 void freeData(textq *node) {
   free(node->data->worker);
   int i;
   for (i = 0; i < node->data->count; i++) {
     //逐个free数据块
+    //free buffers one by one
     free(node->data->data[i]);
   }
   

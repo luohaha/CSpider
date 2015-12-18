@@ -8,23 +8,27 @@
 /*
   原始数据
   例如html，json等，直接返回的数据
+
+  raw data, such as html and json which we get.
 */
 struct cs_rawText_struct {
-  char *data[BUFFER_MAX_NUMBER];
-  unsigned int each[BUFFER_MAX_NUMBER];
-  int count;//数据块的个数
-  int length;//数据的长度
-  uv_work_t *worker;//指向执行此任务的工作线程的handle
-  cspider_t *cspider;//指向当前拥有此任务的spider
+  char *data[BUFFER_MAX_NUMBER]; // Array of buffer
+  unsigned int each[BUFFER_MAX_NUMBER]; // each buffer's size
+  int count;//buffer's number
+  int length;//the sum of all buffer's size
+  uv_work_t *worker;//Point to the worker
+  cspider_t *cspider;//the Main cspider struct
 };
 
 /*
   数据队列
+
+ data queue
 */
 struct cs_rawText_queue_struct {
   cs_rawText_t *data;
-  struct cs_rawText_queue_struct *next;
-  struct cs_rawText_queue_struct *prev;
+  struct cs_rawText_queue_struct *next; // next node
+  struct cs_rawText_queue_struct *prev; // previous node
 };
 
 /*data.c*/

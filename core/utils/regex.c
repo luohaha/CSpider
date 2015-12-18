@@ -48,6 +48,8 @@ int regexAll(const char *regex, char *str, char **res, int num, int flag) {
 
 /*
   正则，是否匹配
+  is it match ?
+  1 for yes, 0 for no
 */
 int match(char *regex, char *str) {
   pcre *re;

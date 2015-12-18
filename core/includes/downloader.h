@@ -6,21 +6,25 @@
 /*
   任务
   存放要执行抓取的url
+
+  the struct of the task
 */
 typedef struct cs_task_struct {
-  char *url;//存放的url
-  cs_rawText_t *data;//指向任务完成后的数据
-  uv_work_t *worker;//指向执行此任务的工作线程的handle
-  cspider_t *cspider;//指向当前拥有此任务的spider
+  char *url;//the url which task need to deal with
+  cs_rawText_t *data;//Point to the struct which save the data we download.
+  uv_work_t *worker;//Point to the worker
+  cspider_t *cspider;//Point to the Main cspider struct
 } cs_task_t;
 
 /*
   任务队列
+
+  task queue
 */
 struct cs_task_queue_struct {
-  cs_task_t *task;
-  struct cs_task_queue_struct *next;
-  struct cs_task_queue_struct *prev;
+  cs_task_t *task; // 
+  struct cs_task_queue_struct *next; // next node
+  struct cs_task_queue_struct *prev; // previous node
 };
 
 

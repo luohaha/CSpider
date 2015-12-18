@@ -24,6 +24,7 @@
 
 /*
 保存返回的数据块的最大数目
+the max number of the buffers
 */
 #define BUFFER_MAX_NUMBER 1024
 

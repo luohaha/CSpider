@@ -36,6 +36,7 @@ cspider_t *init_cspider() {
 }
 /*
  初始设置要抓取的url
+ add urls to task queue
 */
 void cs_setopt_url(cspider_t *cspider, char *url){
   assert(cspider != NULL);
@@ -45,6 +46,7 @@ void cs_setopt_url(cspider_t *cspider, char *url){
 
 /*
 设置cookie
+set cookie
 */
 void cs_setopt_cookie(cspider_t *cspider, char *cookie) {
   ((site_t*)cspider->site)->cookie = cookie;
@@ -52,6 +54,7 @@ void cs_setopt_cookie(cspider_t *cspider, char *cookie) {
 
 /*
   设置user agent
+  set user agent
 */
 void cs_setopt_useragent(cspider_t *cspider, char *agent) {
   ((site_t*)cspider->site)->user_agent = agent;
@@ -59,6 +62,7 @@ void cs_setopt_useragent(cspider_t *cspider, char *agent) {
 
 /*
   设置proxy
+  set proxy
 */
 void cs_setopt_proxy(cspider_t *cspider, char *proxy) {
   ((site_t*)cspider->site)->proxy = proxy;
@@ -66,12 +70,14 @@ void cs_setopt_proxy(cspider_t *cspider, char *proxy) {
 
 /*
  设置超时时间
+ set timeout(ms)
 */
 void cs_setopt_timeout(cspider_t *cspider, long timeout) {
   ((site_t*)cspider->site)->timeout = timeout;
 }
 /*
   设置日志
+  set log file
 */
 void cs_setopt_logfile(cspider_t *cspider, FILE *log) {
   cspider->log = log;
@@ -91,6 +97,9 @@ void cs_setopt_save(cspider_t *cspider, void (*save)(void*, void*), void *user_d
   cspider->save_user_data = user_data;
 }
 
+/*
+  set thread's number
+*/
 void cs_setopt_threadnum(cspider_t *cspider, int flag, int number) {
   assert(flag == DOWNLOAD || flag == SAVE);
   assert(number > 0);
@@ -103,11 +112,11 @@ void cs_setopt_threadnum(cspider_t *cspider, int flag, int number) {
 
 int cs_run(cspider_t *cspider) {
   if (cspider->process == NULL) {
-    printf("warn : 需要设置解析函数(使用cs_setopt_process)\n");
+    printf("warn : need to init process function(use cs_setopt_process)\n");
     return 0;
   }
   if (cspider->save == NULL) {
-    printf("warn : 需要设置数据持久化函数(使用cs_setopt_save)\n");
+    printf("warn : need to init data persistence function(use cs_setopt_save)\n");
     return 0;
   }
   uv_idle_init(cspider->loop, cspider->idler);

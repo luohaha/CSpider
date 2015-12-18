@@ -44,6 +44,7 @@ void download(uv_work_t *req) {
       curl_easy_setopt(curl, CURLOPT_COOKIE, site->cookie);
     }
     /*支持重定向*/
+    /*support redirection*/
     curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1);
     
     curl_easy_setopt(curl, CURLOPT_URL, task->url);
@@ -58,6 +59,8 @@ void download(uv_work_t *req) {
 
 /*
   work线程完成工作后
+  
+  it will be called after work thread finish
 */
 void work_done(uv_work_t *req, int status) {
   cspider_t *cspider = ((cs_task_t*)req->data)->cspider;
@@ -66,7 +69,7 @@ void work_done(uv_work_t *req, int status) {
    */
   if (cspider->log != NULL) {
     uv_rwlock_wrlock(cspider->log_lock);
-    fprintf(cspider->log, "下载完成 : %s\n", ((cs_task_t*)req->data)->url);
+    fprintf(cspider->log, "download finish : %s\n", ((cs_task_t*)req->data)->url);
     uv_rwlock_wrunlock(cspider->log_lock);
   }
   /*
