@@ -53,8 +53,8 @@ gcc -o test test.c -lcspider -I /usr/include/libxml2
 * `void cs_setopt_logfile(cspider_t *, FILE *)`  
 	Passing file pointer to second param, which is used to print log information. Optional. 
 	
-* `void cs_setopt_process(cspider_t *, void (*process)(cspider_t *, char*, void *), void *)`   
-	Passing process function to second param, and user's costom context pointer to third param. You could use this costom context in process function's third param and string which is downloaded in second param.
+* `void cs_setopt_process(cspider_t *, void (*process)(cspider_t *, char*, char *, void *), void *)`   
+	Passing process function to second param, and user's costom context pointer to third param. You could use this costom context in process function's fouth param and string which is downloaded in second param.
 	
 * `void cs_setopt_save(cspider_t *, void (*save)(void*, void*), void*)`  
 	Passing data persistence function to second param, and alse user costom context pointer to third param. In this custom function, you can get pointer to prepared data in second param.
@@ -109,8 +109,9 @@ Print the Github's main page's source code.
 /*
 	costom process function
 */
-void p(cspider_t *cspider, char *d, void *user_data) {
+void p(cspider_t *cspider, char *d, char *url, void *user_data) {
 
+  printf("url -> %s\n", url);
   saveString(cspider, d);
   
 }
