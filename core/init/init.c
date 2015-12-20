@@ -85,7 +85,7 @@ void cs_setopt_logfile(cspider_t *cspider, FILE *log) {
   uv_rwlock_init(cspider->log_lock);
 }
 
-void cs_setopt_process(cspider_t *cspider, void (*process)(cspider_t *, char*, void*), void *user_data) {
+void cs_setopt_process(cspider_t *cspider, void (*process)(cspider_t *, char *, char*, void*), void *user_data) {
   assert(cspider != NULL);
   cspider->process = process;
   cspider->process_user_data = user_data;

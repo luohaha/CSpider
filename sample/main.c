@@ -1,7 +1,7 @@
 #include<cspider/spider.h>
 
-void p(cspider_t *cspider, char *d, void *user_data) {
-
+void p(cspider_t *cspider, char *d, char *url, void *user_data) {
+  printf("url -> %s\n", url);
   saveString(cspider, d);
   
 }

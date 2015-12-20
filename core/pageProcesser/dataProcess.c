@@ -18,7 +18,7 @@ void dataproc(uv_work_t *req) {
   }
   *(get+currentCount) = '\0';
   //得到了数据get
-  (cspider->process)(cspider, get, cspider->process_user_data);
+  (cspider->process)(cspider, get, text->url, cspider->process_user_data);
   free(get);
 }
 

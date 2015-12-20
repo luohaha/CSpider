@@ -16,6 +16,7 @@ struct cs_rawText_struct {
   unsigned int each[BUFFER_MAX_NUMBER]; // each buffer's size
   int count;//buffer's number
   int length;//the sum of all buffer's size
+  char *url; //the url where it downloaded
   uv_work_t *worker;//Point to the worker
   cspider_t *cspider;//the Main cspider struct
 };

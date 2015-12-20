@@ -48,6 +48,10 @@ void download(uv_work_t *req) {
     curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1);
     
     curl_easy_setopt(curl, CURLOPT_URL, task->url);
+    /*
+      put url to cs_rawText_t
+     */
+    task->data->url = task->url;
     
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, save_data);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, req->data);
