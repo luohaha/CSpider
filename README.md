@@ -54,7 +54,7 @@ gcc -o test test.c -lcspider -I /usr/include/libxml2
 	Passing file pointer to second param, which is used to print log information. Optional. 
 	
 * `void cs_setopt_process(cspider_t *, void (*process)(cspider_t *, char*, char *, void *), void *)`   
-	Passing process function to second param, and user's costom context pointer to third param. You could use this costom context in process function's fouth param and string which is downloaded in second param.
+	Passing process function to second param, and user's costom context pointer to third param. You could use this costom context in process function's fourth param and string which is downloaded in second param.
 	
 * `void cs_setopt_save(cspider_t *, void (*save)(void*, void*), void*)`  
 	Passing data persistence function to second param, and alse user costom context pointer to third param. In this custom function, you can get pointer to prepared data in second param.
@@ -67,11 +67,23 @@ gcc -o test test.c -lcspider -I /usr/include/libxml2
 	
 ###More functions
 
-* `void saveString(cspider_t *, void *)`  
-	Using this function in costom process function could pass data pointer to costom data persistence function. 
+* `void saveString(cspider_t *, void *, int)`  
+	Using this function in costom process function could pass data pointer to costom data persistence function. In the third param, you could use `LOCK` if you need thread safety. For exmaple, multi-thread write to same file. You could alse use `NO_LOCK`, if you don't need thread safety. 
+	
+* `void saveStrings(cspider_t *, void **, int, int)`  
+	Using this function could pass array of data pointer to costom data persistence function. Third param is the size of array. Fourth param could be `LOCK` and `NO_LOCK`.  
 	
 * `void addUrl(cspider_t *cspider, char *url)`  
 	Using this function in costom process function could insert url to work queue.  
+	
+* `void addUrls(cspider_t *cspider, char *urls, int size)`  
+	Using this function to insert many urls back to work queue. The third param is the number of urls which you want to insert.  
+	
+* `void freeString(char *)`  
+	Using this function to free string.  
+	
+* `void freeStrings(char **, int)`  
+	Using this function to free array of string. Second param is the size of array. You could use this function after `regexAll` and `xpath` to free the string array you get.
 	
 ###Tools
 
@@ -101,6 +113,8 @@ gcc -o test test.c -lcspider -I /usr/include/libxml2
 
 	cspider contains cJSON. We could use it to parse json data. Usage is [here](https://github.com/kbranigan/cJSON)。  
 	
+>After `regexAll` and `xpath`, you should use `freeStrings` to free the string array which you get.
+	
 ##Example
 Print the Github's main page's source code.  
 
@@ -112,7 +126,7 @@ Print the Github's main page's source code.
 void p(cspider_t *cspider, char *d, char *url, void *user_data) {
 
   printf("url -> %s\n", url);
-  saveString(cspider, d);
+  saveString(cspider, d, LOCK);
   
 }
 /*
