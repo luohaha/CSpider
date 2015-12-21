@@ -1,13 +1,15 @@
 #include "utils.h"
 
-/*
-  正则匹配， 返回所有的子串
-  regex : 正则语法
-  str : 被匹配的字符串
-  res : 保存所有字符串的数组
-  num : 最多匹配的个数
-  flag : 格式
-*/
+/**
+  regexAll : get strings by regex
+  @regex : regular expression
+  @str : input string
+  @res : array of string what we get
+  @num : size of @res
+  @flag : 
+
+  return the number of string what we get
+**/
 int regexAll(const char *regex, char *str, char **res, int num, int flag) {
 
   pcre *re;
@@ -46,11 +48,13 @@ int regexAll(const char *regex, char *str, char **res, int num, int flag) {
   return index;
 }
 
-/*
-  正则，是否匹配
-  is it match ?
-  1 for yes, 0 for no
-*/
+/**
+  match : is it match?
+  @regex : regular expression
+  @str : input string
+
+  return 1 for yes, 0 for no
+**/
 int match(char *regex, char *str) {
   pcre *re;
   //错误信息

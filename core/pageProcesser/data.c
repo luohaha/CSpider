@@ -4,21 +4,21 @@
 /*
 data.c provide some functions to handle cs_rawText_t, 
 such as create, insert, delete and so on.
-
-
 */
-/*
-  判断数据队列是否未空
-  is data queue empty?
-*/
+
+/**
+  isDataQueueEmpty : is data queue empty?
+  @head : the data queue ready to be tested
+
+  return 1 for queue empty, and 0 for queue no empty
+**/
 int isDataQueueEmpty(cs_rawText_queue *head) {
   return (head->next == head);
 }
-/*
-新建头节点
+/**
 
-return initial data queue
-*/
+initDataQueue : return initial data queue
+**/
 textq *initDataQueue() {
   textq *queue = (textq*) malloc(sizeof(textq));
   queue->next = queue;
@@ -27,11 +27,11 @@ textq *initDataQueue() {
   return queue;
 }
 
-/*
-  创建节点
-
-  create data struct
-*/
+/**
+  createData : create data struct
+  
+  return the data struct which we create
+**/
 text *createData() {
   text *node = (text*)malloc(sizeof(text));
   
@@ -41,11 +41,11 @@ text *createData() {
   return node;
 }
 
-/*
-  将获取到的数据加入队列
-
-  add data into data queue
-*/
+/**
+  addData : add data struct into data queue
+  @head : the data queue ready to be inserted
+  @queue : will insert into @head
+**/
 void addData(textq *head, textq *queue) {
 
   
@@ -55,11 +55,17 @@ void addData(textq *head, textq *queue) {
   queue->prev->next = queue;
   return;
 }
-/*
-  从队列中取出数据
+/**
+  
+  removeData : remove data from data queue
+  @head : the data queue ready to be removed from
+  @data : the data struct ready to removed from @head
 
-  remove data from data queue
-*/
+  if @data exists in @head
+  return @data
+  else
+  return NULL
+**/
 textq *removeData(textq *head, text *data) {
   textq *p = head->next;
   textq *res = NULL;
@@ -77,11 +83,17 @@ textq *removeData(textq *head, text *data) {
   
   return res;
 }
-/*
-回收数据
+/**
 
-free data queue
-*/
+freeData : free data queue
+@node : ready to be freed
+
+first, free the worker
+second, free the array of buffer
+third, free the url
+fourth: free data struct
+finally, free data queue
+**/
 void freeData(textq *node) {
   free(node->data->worker);
   int i;
@@ -90,7 +102,7 @@ void freeData(textq *node) {
     //free buffers one by one
     free(node->data->data[i]);
   }
-  
+  free(node->data->url);
   free(node->data);
   free(node);
 }

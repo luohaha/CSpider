@@ -1,9 +1,11 @@
 #include "spider.h"
 #include "downloader.h"
 
-/*
-  init the cspider
-*/
+/**
+  init_cspider : init the cspider
+
+  return the cspider_t which is ready
+**/
 
 cspider_t *init_cspider() {
   cspider_t *spider = (cspider_t *)malloc(sizeof(cspider_t));
@@ -34,72 +36,91 @@ cspider_t *init_cspider() {
   spider->log = NULL;
   return spider;
 }
-/*
- 初始设置要抓取的url
- add urls to task queue
-*/
+/**
+ cs_setopt_url : add urls to task queue
+ @cspider : the cspider
+ @url : new task's url
+**/
 void cs_setopt_url(cspider_t *cspider, char *url){
   assert(cspider != NULL);
   assert(url != NULL);
-  createTask(cspider->task_queue, url);
+  unsigned int len = strlen(url);
+  char *reUrl = (char*)malloc(sizeof(char) * len);
+  strncpy(reUrl, url, len);
+  createTask(cspider->task_queue, reUrl);
 }
 
-/*
-设置cookie
-set cookie
-*/
+/**
+cs_setopt_cookie : set cookie
+@cspider : the cspider
+@cookie : the cookie string
+**/
 void cs_setopt_cookie(cspider_t *cspider, char *cookie) {
   ((site_t*)cspider->site)->cookie = cookie;
 }
 
-/*
-  设置user agent
-  set user agent
-*/
+/**
+  cs_setopt_useragent : set user agent
+**/
 void cs_setopt_useragent(cspider_t *cspider, char *agent) {
   ((site_t*)cspider->site)->user_agent = agent;
 }
 
-/*
-  设置proxy
-  set proxy
-*/
+/**
+  cs_setopt_proxy : set proxy
+**/
 void cs_setopt_proxy(cspider_t *cspider, char *proxy) {
   ((site_t*)cspider->site)->proxy = proxy;
 }
 
-/*
- 设置超时时间
- set timeout(ms)
-*/
+/**
+ cs_setopt_timeout : set timeout(ms)
+**/
 void cs_setopt_timeout(cspider_t *cspider, long timeout) {
   ((site_t*)cspider->site)->timeout = timeout;
 }
-/*
-  设置日志
-  set log file
-*/
+/**
+  cs_setopt_logfile : set log file
+**/
 void cs_setopt_logfile(cspider_t *cspider, FILE *log) {
   cspider->log = log;
   cspider->log_lock = (uv_rwlock_t*)malloc(sizeof(uv_rwlock_t));
   uv_rwlock_init(cspider->log_lock);
 }
-
+/**
+cs_setopt_process : pass the costom process function to cspider
+@cspider : the cspider
+@process : the Pointer which point to costom process function
+@user_data : Pointer to context data which you want to pass to @process
+ **/
 void cs_setopt_process(cspider_t *cspider, void (*process)(cspider_t *, char *, char*, void*), void *user_data) {
   assert(cspider != NULL);
   cspider->process = process;
   cspider->process_user_data = user_data;
 }
-
+/**
+cs_setopt_save : pass the costom save function to cspider
+@cspider : the cspider
+@save : the Pointer which point to costom save function
+@user_data : Pointer to context data which you want to pass to @save
+ **/
 void cs_setopt_save(cspider_t *cspider, void (*save)(void*, void*), void *user_data){
   assert(cspider != NULL);
   cspider->save = save;
   cspider->save_user_data = user_data;
 }
 
-/*
-  set thread's number
-*/
+/**
+  cs_setopt_threadnum : set thread's number
+  @cspider : the cspider
+  @flag : thread's type
+  @number : thread's max number which we want to set
+
+  if @flag equal DOWNLOAD
+  @number will be the max number of download thread
+  else if @flag equal SAVE
+  @number whill be the max number of save thread
+**/
 void cs_setopt_threadnum(cspider_t *cspider, int flag, int number) {
   assert(flag == DOWNLOAD || flag == SAVE);
   assert(number > 0);
@@ -109,7 +130,9 @@ void cs_setopt_threadnum(cspider_t *cspider, int flag, int number) {
     cspider->pipeline_thread_max = number;
   }
 }
-
+/**
+   cs_run : start the cspider
+**/
 int cs_run(cspider_t *cspider) {
   if (cspider->process == NULL) {
     printf("warn : need to init process function(use cs_setopt_process)\n");

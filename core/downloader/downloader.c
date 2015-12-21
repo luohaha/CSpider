@@ -3,9 +3,13 @@
 #include "pageProcesser.h"
 
 
-/*
+/**
   execute after curl get data.
-*/
+  @ptr : point to string which curl get
+  @size :
+  @nmemb : @size * @nmemb equal the size of string
+  @ss : input pointer
+**/
 size_t save_data(void *ptr, size_t size, size_t nmemb, void *ss) {
   cs_task_t *save = (cs_task_t*)ss;
   
@@ -18,9 +22,10 @@ size_t save_data(void *ptr, size_t size, size_t nmemb, void *ss) {
   return all;
 }
 
-/*
+/**
   use curl to download
-*/
+  @req : the worker
+**/
 void download(uv_work_t *req) {
   CURL *curl;
   CURLcode res;
@@ -61,11 +66,10 @@ void download(uv_work_t *req) {
   }
 }
 
-/*
-  work线程完成工作后
-  
-  it will be called after work thread finish
-*/
+/**
+  work_done : it will be called after work thread finish
+  @req : the worker
+**/
 void work_done(uv_work_t *req, int status) {
   cspider_t *cspider = ((cs_task_t*)req->data)->cspider;
   /*打印到日志

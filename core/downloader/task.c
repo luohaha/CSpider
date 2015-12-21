@@ -1,19 +1,20 @@
 #include "downloader.h"
 #include "pageProcesser.h"
 
-/*
-判断任务队列是否为空
-
-is task queue empty?
-*/
+/**
+isTaskQueueEmpty : is task queue empty?
+@head : task queue ready to test
+return 1 for empty, 0 for no empty
+**/
 int isTaskQueueEmpty(cs_task_queue *head) {
   return (head->next == head);
 }
-/*
-初始化任务队列
+/**
 
-return the initializing queue
-*/
+initTaskQueue : return the initializing queue
+
+return the new task queue.
+**/
 cs_task_queue *initTaskQueue() {
   cs_task_queue *new_queue = (cs_task_queue*)malloc(sizeof(cs_task_queue));
   new_queue->task = NULL;
@@ -21,11 +22,11 @@ cs_task_queue *initTaskQueue() {
   new_queue->prev = new_queue;
   return new_queue;
 }
-/*
-给任务队列添加任务
-
-add a task to task queue
-*/
+/**
+createTask : add a task to task queue
+@head : the task queue ready to be inserted
+@url : new task's url
+**/
 void createTask(cs_task_queue *head, char *url) {
   cs_task_t *task = (cs_task_t*)malloc(sizeof(cs_task_t));
   task->url = url;
@@ -39,11 +40,18 @@ void createTask(cs_task_queue *head, char *url) {
   queue->prev->next = queue;
   return;
 }
-/*
-将任务移除出队列
+/**
 
-remove the task from the task queue
-*/
+removeTask : remove the task from the task queue
+@head : the task queue ready to be removed from
+@task : removed task
+
+if @task exists in @head, 
+return @task
+else
+return NULL
+ 
+**/
 cs_task_queue *removeTask(cs_task_queue *head, cs_task_t *task) {
   cs_task_queue *p = head->next;
   cs_task_queue *res = NULL;
@@ -60,11 +68,13 @@ cs_task_queue *removeTask(cs_task_queue *head, cs_task_t *task) {
   }
   return res;
 }
-/*
-  将已有任务加入队列
+/**
+  
+  addTask : add a task into queue
+  @head : the task queue ready to be inserted
+  @task : the task ready to insert into @head
 
-  add a task into queue
-*/
+**/
 void addTask(cs_task_queue *head, cs_task_queue *task) {
   task->next = head;
   task->prev = head->prev;
@@ -72,11 +82,15 @@ void addTask(cs_task_queue *head, cs_task_queue *task) {
   task->prev->next = task;
   return;
 }
-/*
-回收任务队列节点
+/**
+freeTask : free the task queue
+@node : the task ready to be freed
 
-free the task queue
-*/
+first, free the uv_work_t
+second, free cs_task_t
+finally, frr cs_task_queue
+
+**/
 void freeTask(cs_task_queue *node) {
   free(node->task->worker);
   free(node->task);

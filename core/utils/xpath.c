@@ -1,9 +1,14 @@
 #include "utils.h"
 
-/*
-  xml : 待解析的文件
-  path : 解析该文件的xpath法制
-*/
+/**
+ * xpath :
+ * @xml : the input string
+ * @path : the rules
+ * @get : array of string
+ * @num : size of @get
+
+ * return the number of string we get
+ **/
 int xpath(char *xml, char *path, char **get, int num) { 
 
   int size;
