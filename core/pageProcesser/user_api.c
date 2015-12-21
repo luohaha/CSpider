@@ -28,3 +28,23 @@ void addUrl(cspider_t *cspider, char *url) {
   createTask(cspider->task_queue, reUrl);
   uv_rwlock_wrunlock(cspider->lock);
 }
+/**
+  addUrls : add many urls back to task queue
+  @cspider : the cspider_t
+  @urls : the array of url
+  @size : the size of @urls
+**/
+void addUrls(cspider_t *cspider, char **urls, int size) {
+  int i;
+  char *reUrls[size];
+  for (i = 0; i < size; i++) {
+    unsigned int len = strlen(urls[i]);
+    reUrls[i] = (char*)malloc(sizeof(char) * len);
+    strncpy(reUrls[i], urls[i], len);
+  }
+  uv_rwlock_wrlock(cspider->lock);
+  for (i = 0; i < size; i++) {
+    createTask(cspider->task_queue, reUrls[i]);
+  }
+  uv_rwlock_wrunlock(cspider->lock);
+}
