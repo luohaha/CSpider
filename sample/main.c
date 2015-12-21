@@ -9,9 +9,7 @@ void p(cspider_t *cspider, char *d, char *url, void *user_data) {
 
   int i;
   addUrls(cspider, get, size);
-  for (i = 0; i < size; i++) {
-    saveString(cspider, get[i]);
-  }
+  saveStrings(cspider, (void**)get, size, NO_LOCK);
   freeStrings(get, size);
 }
 
