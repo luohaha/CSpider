@@ -9,11 +9,42 @@
   saveString : api of data persistence
   @cspider : the cspider_t
   @data : the pointer point to data which is ready to be saved
+  @flag : if the data persistence need to be locked
 **/
-void saveString(cspider_t *cspider, void *data) {
-  uv_rwlock_wrlock(cspider->save_lock);
-  (cspider->save)(data, cspider->save_user_data);
-  uv_rwlock_wrunlock(cspider->save_lock);
+void saveString(cspider_t *cspider, void *data, int flag) {
+  assert(flag == LOCK || flag == NO_LOCK);
+  if (flag == LOCK) {
+    uv_rwlock_wrlock(cspider->save_lock);
+    (cspider->save)(data, cspider->save_user_data);
+    uv_rwlock_wrunlock(cspider->save_lock);
+  } else {
+    (cspider->save)(data, cspider->save_user_data);
+  }
+}
+/**
+  saveStrings : save array of data
+  @cspider : the cspider_t
+  @datas : array of data pointer
+  @size : size of @datas
+  @flag : if the data persistence need to be locked
+
+**/
+void saveStrings(cspider_t *cspider, void **datas, int size, int flag) {
+  int i;
+  assert(flag == LOCK || flag == NO_LOCK);
+  if (flag == LOCK) {
+    //need to lock
+    uv_rwlock_wrlock(cspider->save_lock);
+    for (i = 0; i < size; i++) {
+      (cspider->save)(datas[i], cspider->save_user_data);
+    }
+    uv_rwlock_wrunlock(cspider->save_lock);
+  } else {
+    // no need to lock
+    for (i = 0; i < size; i++) {
+      (cspider->save)(datas[i], cspider->save_user_data);
+    }
+  }
 }
 /**
   addUrl : add url back to task queue

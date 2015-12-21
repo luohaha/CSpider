@@ -6,6 +6,11 @@
 #include "downloader.h"
 
 /*
+
+*/
+#define LOCK 1
+#define NO_LOCK 0
+/*
   原始数据
   例如html，json等，直接返回的数据
 
@@ -46,7 +51,8 @@ void datasave(uv_work_t *req, int status);
 /*
   用户接口
 */
-void saveString(cspider_t *cspider, void *data);
+void saveString(cspider_t *cspider, void *data, int flag);
+void saveStrings(cspider_t *cspider, void **datas, int size, int flag);
 void addUrl(cspider_t *cspider, char *url);
 void addUrls(cspider_t *cspider, char **urls, int size);
 void freeString(char *str);
