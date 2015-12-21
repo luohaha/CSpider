@@ -48,3 +48,23 @@ void addUrls(cspider_t *cspider, char **urls, int size) {
   }
   uv_rwlock_wrunlock(cspider->lock);
 }
+
+/**
+   freeString : free string
+   @str : ready to be freed
+**/
+void freeString(char *str) {
+  free(str);
+}
+
+/**
+   freeStrings : free string array
+   @strs : string array
+   @size : size of @strs
+**/
+void freeStrings(char **strs, int size) {
+  int i;
+  for (i = 0; i < size; i++) {
+    free(strs[i]);
+  }
+}

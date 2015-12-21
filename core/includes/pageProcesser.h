@@ -48,5 +48,8 @@ void datasave(uv_work_t *req, int status);
 */
 void saveString(cspider_t *cspider, void *data);
 void addUrl(cspider_t *cspider, char *url);
+void addUrls(cspider_t *cspider, char **urls, int size);
+void freeString(char *str);
+void freeStrings(char **strs, int size);
 
 #endif

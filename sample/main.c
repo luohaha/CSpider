@@ -4,19 +4,21 @@ void p(cspider_t *cspider, char *d, char *url, void *user_data) {
 
   char *get[100];
   
-  int size = xpath(d, "//div[@id='listofficial']/div[@class='yk-row yk-v-80']/div[@class='yk-col3']/div[@class='p p-small']/div[@class='p-meta pa']/div[@class='p-meta-title']/a/@title", get, 100);
+  //int size = xpath(d, "//div[@id='listofficial']/div[@class='yk-row yk-v-80']/div[@class='yk-col3']/div[@class='p p-small']/div[@class='p-meta pa']/div[@class='p-meta-title']/a/@title", get, 100);
+  int size = regexAll("http(.*?)html", d, get, 100, REGEX_ALL);
 
   int i;
+  addUrls(cspider, get, size);
   for (i = 0; i < size; i++) {
     saveString(cspider, get[i]);
   }
+  freeStrings(get, size);
 }
 
 void s(void *str, void *user_data) {
   char *get = (char *)str;
   FILE *file = (FILE*)user_data;
   fprintf(file, "%s\n", get);
-  free(str);
   return;
 }
 
