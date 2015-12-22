@@ -4,9 +4,6 @@
 #include "CS.h"
 
 /*
-  任务
-  存放要执行抓取的url
-
   the struct of the task
 */
 typedef struct cs_task_struct {
@@ -17,8 +14,6 @@ typedef struct cs_task_struct {
 } cs_task_t;
 
 /*
-  任务队列
-
   task queue
 */
 struct cs_task_queue_struct {

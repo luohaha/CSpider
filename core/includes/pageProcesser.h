@@ -11,9 +11,6 @@
 #define LOCK 1
 #define NO_LOCK 0
 /*
-  原始数据
-  例如html，json等，直接返回的数据
-
   raw data, such as html and json which we get.
 */
 struct cs_rawText_struct {
@@ -27,8 +24,6 @@ struct cs_rawText_struct {
 };
 
 /*
-  数据队列
-
  data queue
 */
 struct cs_rawText_queue_struct {
@@ -49,7 +44,7 @@ void freeData(cs_rawText_queue *node);
 void dataproc(uv_work_t *req);
 void datasave(uv_work_t *req, int status);
 /*
-  用户接口
+  user interface
 */
 void saveString(cspider_t *cspider, void *data, int flag);
 void saveStrings(cspider_t *cspider, void **datas, int size, int flag);

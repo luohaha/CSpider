@@ -11,39 +11,40 @@
 #define SAVE     0
 
 typedef struct site_struct {
-  char *user_agent;//主机信息
-  char *proxy;//代理地址
-  char *cookie;//存放cookie
-  long timeout;//超时时间
+  char *user_agent;//user agent
+  char *proxy;// proxy address
+  char *cookie;//cookie string
+  long timeout;// timeout (ms)
 } site_t;
 
 struct cspider_struct {
   uv_loop_t *loop;
   uv_idle_t *idler;
-  //任务队列
+  //task queue
   cs_task_queue *task_queue_doing;
   cs_task_queue *task_queue;
-  //获取到的数据队列
+  //data queue
   cs_rawText_queue *data_queue;
   cs_rawText_queue *data_queue_doing;
-  //提供给用户的函数接口
+  // custom function
   void (*process)(struct cspider_struct *cspider, char *d, char *url, void *user_data);
   void (*save)(void *data, void *user_data);
-  //对应process和save函数，各自的用户自定义的上下文
+  //
   void *process_user_data;
   void *save_user_data;
-  //最大线程数量，和当前的线程数量
+  //Max thread number
   int download_thread_max;
   int pipeline_thread_max;
+  //current thread number
   int download_thread;
   int pipeline_thread;
-  //锁
+  //lock
   uv_rwlock_t *lock;
-  //数据持久化的锁
+  //data persistence lock
   uv_rwlock_t *save_lock;
-  //爬虫的信息，包括useragent, cookie, timeout, proxy
+  //include useragent, cookie, timeout, proxy
   site_t *site;
-  //输出日志的文件地址
+  //log file
   FILE *log;
   uv_rwlock_t *log_lock;
   //bloom filter
