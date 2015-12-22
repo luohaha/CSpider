@@ -10,6 +10,7 @@
 #include<math.h>
 #include<float.h>
 #include<limits.h>
+#include<stdarg.h>
 #include<ctype.h>
 #include<curl/curl.h>
 #include<pcre.h>

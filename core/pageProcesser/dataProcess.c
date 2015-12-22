@@ -31,16 +31,14 @@ void dataproc(uv_work_t *req) {
  **/
 void datasave(uv_work_t *req, int status) {
   cspider_t *cspider = ((cs_rawText_t*)req->data)->cspider;
-  // print to log
-  if (cspider->log != NULL) {
-    uv_rwlock_wrlock(cspider->log_lock);
-    fprintf(cspider->log, "data processing finish : lenght %d bytes\n", ((cs_rawText_t*)req->data)->length);
-    uv_rwlock_wrunlock(cspider->log_lock);
-  }
+  //log
+  logger(0, "%s save finish.\n", ((cs_rawText_t*)req->data)->url, cspider);
+  
   uv_rwlock_wrlock(cspider->lock);
   cspider->pipeline_thread--;
   cs_rawText_queue *q = removeData(cspider->data_queue_doing, req->data);
   assert(q != NULL);
+  logger(q != NULL, "removeData error in %s.\n", "dataProcess.c", cspider);
   freeData(q);
   uv_rwlock_wrunlock(cspider->lock);
 }

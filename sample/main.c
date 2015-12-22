@@ -1,20 +1,17 @@
 #include<cspider/spider.h>
 
 void p(cspider_t *cspider, char *d, char *url, void *user_data) {
-
-  char *get[100];
+  char *get[10];
+  //int size = xpath(d, "//div[@id='listofficial']/div[@class='yk-row yk-v-80']/div[@class='yk-col3']/div[@class='p p-small']/div[@class='p-meta pa']/div[@class='p-meta-title']/a/@href", get, 10);
+  int size = regexAll("http:\/\/(.*?)\.html", d, get, 3, REGEX_ALL);
   
-  //int size = xpath(d, "//div[@id='listofficial']/div[@class='yk-row yk-v-80']/div[@class='yk-col3']/div[@class='p p-small']/div[@class='p-meta pa']/div[@class='p-meta-title']/a/@title", get, 100);
-  int size = regexAll("http(.*?)html", d, get, 100, REGEX_ALL);
-
-  int i;
   addUrls(cspider, get, size);
-  saveStrings(cspider, (void**)get, size, NO_LOCK);
+  saveStrings(cspider, (void**)get, size, LOCK);
   freeStrings(get, size);
 }
 
 void s(void *str, void *user_data) {
-  char *get = (char *)str;
+  char *get = (char*)str;
   FILE *file = (FILE*)user_data;
   fprintf(file, "%s\n", get);
   return;
@@ -33,6 +30,7 @@ int main() {
   //设置抓取线程数量，和数据持久化的线程数量
   cs_setopt_threadnum(spider, DOWNLOAD, 2);
   cs_setopt_threadnum(spider, SAVE, 2);
+  cs_setopt_logfile(spider, stdout);
 
   return cs_run(spider);
 }

@@ -1,5 +1,6 @@
 #include "spider.h"
 #include "downloader.h"
+#include "utils.h"
 
 /**
   init_cspider : init the cspider
@@ -34,6 +35,7 @@ cspider_t *init_cspider() {
   spider->site->cookie = NULL;
   spider->site->timeout = 0;
   spider->log = NULL;
+  spider->bloom = init_Bloom();
   return spider;
 }
 /**
@@ -44,10 +46,14 @@ cspider_t *init_cspider() {
 void cs_setopt_url(cspider_t *cspider, char *url){
   assert(cspider != NULL);
   assert(url != NULL);
-  unsigned int len = strlen(url);
-  char *reUrl = (char*)malloc(sizeof(char) * len);
-  strncpy(reUrl, url, len);
-  createTask(cspider->task_queue, reUrl);
+  if (!bloom_check(cspider->bloom, url)) {
+    //url no exits
+    bloom_add(cspider->bloom, url);
+    unsigned int len = strlen(url);
+    char *reUrl = (char*)malloc(sizeof(char) * (len+1));
+    strncpy(reUrl, url, len+1);
+    createTask(cspider->task_queue, reUrl);
+  }
 }
 
 /**

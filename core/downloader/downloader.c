@@ -1,6 +1,7 @@
 #include "downloader.h"
 #include "spider.h"
 #include "pageProcesser.h"
+#include "utils.h"
 
 
 /**
@@ -75,11 +76,7 @@ void work_done(uv_work_t *req, int status) {
   /*打印到日志
     print log
    */
-  if (cspider->log != NULL) {
-    uv_rwlock_wrlock(cspider->log_lock);
-    fprintf(cspider->log, "download finish : %s\n", ((cs_task_t*)req->data)->url);
-    uv_rwlock_wrunlock(cspider->log_lock);
-  }
+  logger(0, "%s download finish.\n", ((cs_task_t*)req->data)->url, cspider);
   /*
     when finish download data, 
     first, remove task from task_queue_doing 

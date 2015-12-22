@@ -46,6 +46,8 @@ struct cspider_struct {
   //输出日志的文件地址
   FILE *log;
   uv_rwlock_t *log_lock;
+  //bloom filter
+  Bloom_t *bloom;
 };
 
 cspider_t *init_cspider();

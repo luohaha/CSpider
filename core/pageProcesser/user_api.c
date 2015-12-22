@@ -1,5 +1,5 @@
 #include "pageProcesser.h"
-
+#include "utils.h"
 /*
   provide two functions to users.
   saveString : save the string.
@@ -52,12 +52,16 @@ void saveStrings(cspider_t *cspider, void **datas, int size, int flag) {
   @url : url added back to task queue
 **/
 void addUrl(cspider_t *cspider, char *url) {
-  unsigned int len = strlen(url);
-  char *reUrl = (char*)malloc(sizeof(char) * len);
-  strncpy(reUrl, url, len);
-  uv_rwlock_wrlock(cspider->lock);
-  createTask(cspider->task_queue, reUrl);
-  uv_rwlock_wrunlock(cspider->lock);
+  if (!bloom_check(cspider->bloom, url)) {
+    //no exits
+    bloom_add(cspider->bloom, url);
+    unsigned int len = strlen(url);
+    char *reUrl = (char*)malloc(sizeof(char) * len);
+    strncpy(reUrl, url, len);
+    uv_rwlock_wrlock(cspider->lock);
+    createTask(cspider->task_queue, reUrl);
+    uv_rwlock_wrunlock(cspider->lock);
+  }
 }
 /**
   addUrls : add many urls back to task queue
@@ -69,13 +73,20 @@ void addUrls(cspider_t *cspider, char **urls, int size) {
   int i;
   char *reUrls[size];
   for (i = 0; i < size; i++) {
-    unsigned int len = strlen(urls[i]);
-    reUrls[i] = (char*)malloc(sizeof(char) * len);
-    strncpy(reUrls[i], urls[i], len);
+    if (!bloom_check(cspider->bloom, urls[i])) {
+      // no exits
+      bloom_add(cspider->bloom, urls[i]);
+      unsigned int len = strlen(urls[i]);
+      reUrls[i] = (char*)malloc(sizeof(char) * (len + 1));
+      strncpy(reUrls[i], urls[i], len+1);
+    } else {
+      reUrls[i] = NULL;
+    }
   }
   uv_rwlock_wrlock(cspider->lock);
   for (i = 0; i < size; i++) {
-    createTask(cspider->task_queue, reUrls[i]);
+    if (reUrls[i] != NULL)
+      createTask(cspider->task_queue, reUrls[i]);
   }
   uv_rwlock_wrunlock(cspider->lock);
 }
