@@ -55,7 +55,7 @@ void addUrl(cspider_t *cspider, char *url) {
   if (!bloom_check(cspider->bloom, url)) {
     //no exits
     bloom_add(cspider->bloom, url);
-    unsigned int len = strlen(url);
+    unsigned int len = strlen(url) + 1;
     char *reUrl = (char*)malloc(sizeof(char) * len);
     strncpy(reUrl, url, len);
     uv_rwlock_wrlock(cspider->lock);
