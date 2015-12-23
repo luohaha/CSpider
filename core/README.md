@@ -1,6 +1,8 @@
-#爬虫的核心模块#
-##一共有四个部分：##
-1. downloader : 负责从互联网上下载页面，用于后续处理。
-2. pageProcessor : 对获取到的页面进行初步处理，并提供给用户解析函数和数据持久化函数的接口。
-3. scheduler : 调度程序，管理需要抓取的url，并进行去重和调度。（未完成）
-4. utils : 提供给用户各种便捷的，在编写爬虫程序时会用到的方法和函数。例如正则解析，xml解析，json解析，存储数据库接口等。
+#Structure of cspider#
+##Directory：##
+1. downloader : download data from internet.
+2. pageProcessor : process data and.
+3. scheduler : manager task queues.
+4. utils : some useful tools such as xml and json Parser.
+5. includes : all header file
+6. init : initialize cspider.
