@@ -3,7 +3,7 @@
 void p(cspider_t *cspider, char *d, char *url, void *user_data) {
   char *get[10];
   //int size = xpath(d, "//div[@id='listofficial']/div[@class='yk-row yk-v-80']/div[@class='yk-col3']/div[@class='p p-small']/div[@class='p-meta pa']/div[@class='p-meta-title']/a/@href", get, 10);
-  int size = regexAll("http:\/\/(.*?)\.html", d, get, 3, REGEX_ALL);
+  int size = regexAll("http:\\/\\/(.*?)\\.html", d, get, 3, REGEX_ALL);
   
   addUrls(cspider, get, size);
   saveStrings(cspider, (void**)get, size, LOCK);
