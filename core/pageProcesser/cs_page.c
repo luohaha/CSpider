@@ -1,5 +1,6 @@
 #include <string.h>
 #include "pageProcesser.h"
+#include "cs_page.h"
 
 void clear_page(cs_page *p);
 void destroy_page(cs_page *p);
