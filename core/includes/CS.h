@@ -22,7 +22,7 @@
 #include<libxml/HTMLtree.h>
 
 
-
+#define PANIC(x) assert(x != NULL)
 /*
 the max number of the buffers
 */

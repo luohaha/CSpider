@@ -3,9 +3,8 @@
 /**
   watcher : watch the work queues, to find out if there is work to do
   @handle : the uv_idle_t
-  @return: 0 if not fail
 **/
-int watcher(uv_idle_t *handle) {
+void watcher(uv_idle_t *handle) {
   cspider_t *cspider = (cspider_t*)handle->data;
   uv_rwlock_wrlock(cspider->lock);
   if (!isTaskQueueEmpty(cspider->task_queue)) {
@@ -17,12 +16,10 @@ int watcher(uv_idle_t *handle) {
 	when thread's number reach the max limit
        */
       cs_task_queue *rem = removeTask(cspider->task_queue, cspider->task_queue->next->task);
-      if(rem == NULL)
-      	return 1;
+      PANIC(rem);
     
       uv_work_t *req = (uv_work_t*)malloc(sizeof(uv_work_t));
-      if(req == NULL)
-      	return 2;
+      PANIC(req);
       
       req->data = rem->task;
       //Point to the worker
@@ -42,18 +39,17 @@ int watcher(uv_idle_t *handle) {
     // start thread
     if (cspider->pipeline_thread <= cspider->pipeline_thread_max) {
       cs_rawText_queue *rem = removeData(cspider->data_queue, cspider->data_queue->next->data);
-      if(rem == NULL)
-      	return 3;
+      PANIC(rem);
       	
       uv_work_t *req = (uv_work_t*)malloc(sizeof(uv_work_t));
-      if(req == NULL)
-      	return 4;
-      
+      PANIC(req);
+
+      req->data = rem->data;
       // points to working handle
       cs_rawText_t* pdata = (cs_rawText_t*)rem->data;
       pdata->worker = req;
       pdata->cspider = cspider;
-      req->data = rem->data;
+      
       
       addData(cspider->data_queue_doing, rem);
       uv_queue_work(cspider->loop, req, dataproc, datasave);
@@ -73,5 +69,4 @@ int watcher(uv_idle_t *handle) {
     uv_idle_stop(handle);
   }
   
-  return 0;
 }
