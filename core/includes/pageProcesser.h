@@ -41,7 +41,7 @@ struct cs_rawText_struct {
 #define Fset_file_type(TYPE) ((char)FFmacro_expand(FileType##Type))
 
 struct cs_page {
-  char *data;
+  void' *data;
   unsigned int capacity;
   char file_type;
   unsigned int used;
