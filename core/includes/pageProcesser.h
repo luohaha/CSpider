@@ -42,11 +42,9 @@ struct cs_rawText_struct {
 
 struct cs_page {
   char *data;
-  char file_type;
-  /*---------------------*/
   unsigned int capacity;
+  char file_type;
   unsigned int used;
-  bool gc; /* retention */
 };
 
 /*
