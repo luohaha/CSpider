@@ -17,7 +17,7 @@ int watcher(uv_idle_t *handle) {
 	when thread's number reach the max limit
        */
       cs_task_queue *rem = removeTask(cspider->task_queue, cspider->task_queue->next->task);
-      if(cs_task_queue == NULL)
+      if(rem == NULL)
       	return 1;
     
       uv_work_t *req = (uv_work_t*)malloc(sizeof(uv_work_t));
@@ -50,9 +50,9 @@ int watcher(uv_idle_t *handle) {
       	return 4;
       
       // points to working handle
-      cs_task_t* ptask = (cs_rawText_t*)rem->data;
-      ptask->worker = req;
-      ptask->cspider = cspider;
+      cs_rawText_t* pdata = (cs_rawText_t*)rem->data;
+      pdata->worker = req;
+      pdata->cspider = cspider;
       req->data = rem->data;
       
       addData(cspider->data_queue_doing, rem);

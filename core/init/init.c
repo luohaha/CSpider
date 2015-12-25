@@ -1,6 +1,7 @@
 #include "spider.h"
 #include "downloader.h"
 #include "utils.h"
+#include "scheduler.h"
 
 /**
   init_cspider : init the cspider

@@ -39,7 +39,6 @@ typedef struct cs_task_queue_struct cs_task_queue;
 typedef struct cs_rawText_queue_struct cs_rawText_queue;
 typedef struct cs_rawText_struct cs_rawText_t;
 
-void watcher(uv_idle_t *handle);
 size_t save_data(void *ptr, size_t size, size_t nmemb, void *save);
 void download(uv_work_t *req);
 void work_done(uv_work_t *req, int status);

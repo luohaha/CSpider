@@ -6,6 +6,6 @@
 #include "pageProcesser.h"
 #include "spider.h"
 
-void watcher(uv_idle_t *handle);
+int watcher(uv_idle_t *handle);
 
 #endif

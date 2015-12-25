@@ -26,7 +26,7 @@ size_t save_data(void *ptr, size_t size, size_t nmemb, void *ss) {
   strncpy(save->data->data[count], (char*)ptr, all);
   
   save->data->each[count] = all;
-  save->data->count = count++;
+  save->data->count = count + 1;
   save->data->length += all;
   
   return all;
