@@ -13,13 +13,22 @@
 **/
 size_t save_data(void *ptr, size_t size, size_t nmemb, void *ss) {
   cs_task_t *save = (cs_task_t*)ss;
-  
+  size_t count = save->data->count;
   size_t all = size * nmemb;
-  save->data->data[save->data->count] = (char*)malloc(sizeof(char)*all);
-  strncpy(save->data->data[save->data->count], (char*)ptr, all);
-  save->data->each[save->data->count] = all;
-  save->data->count++;
+  
+  char* buf = (char*) malloc(all);
+  if(buf == NULL) 
+    return (size_t) -1;
+  save->data->data[count] = buf; // "char != 1" only appears in IBM machines.
+  
+  if(ptr == NULL)
+    return (size_t) -1;
+  strncpy(save->data->data[count], (char*)ptr, all);
+  
+  save->data->each[count] = all;
+  save->data->count = count++;
   save->data->length += all;
+  
   return all;
 }
 
