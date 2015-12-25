@@ -37,27 +37,23 @@ struct cs_rawText_struct {
 #define FileTypeCSS 2
 #define FileTypeJSON 3
 
-#define FFmacro_expand(x) x
-#define Fset_file_type(TYPE) ((char)FFmacro_expand(FileType##Type))
-
 struct cs_page {
-  void' *data;
+  void *data;
   unsigned int capacity;
-  char file_type;
   unsigned int used;
+  char file_type;
 };
 
 /*
   page carrier'a queue
 */
-#define MaxPageQueueNum 64
+#define MaxPageQueueNum 32
+#define LogMaxPageQueueNum 5
 
 struct cs_page_queue {
-  cs_page **page_queue;
-  /*---------------------*/
+  cs_page *pages;
   unsigned int capacity;
-  unsigned int used;
-  bool gc; /* retention */
+  unsigned int usage;
 };
 
 /*-------------------------block end-------------------------*/
