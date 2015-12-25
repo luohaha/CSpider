@@ -32,6 +32,7 @@ struct cs_rawText_struct {
 /*
   page carrier
 */
+#define FileTypeErr 0
 #define FileTypeHTML 1
 #define FileTypeCSS 2
 #define FileTypeJSON 3
