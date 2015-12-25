@@ -1,5 +1,5 @@
-#ifndef PAGEPROCESSER_H
-#define PAGEPROCESSER_H
+#ifndef PAGEPROCESSER_H_DEF
+#define PAGEPROCESSER_H_DEF
 
 #include "CS.h"
 #include "spider.h"
@@ -14,22 +14,62 @@
   raw data, such as html and json which we get.
 */
 struct cs_rawText_struct {
-  char *data[BUFFER_MAX_NUMBER]; // Array of buffer
-  unsigned int each[BUFFER_MAX_NUMBER]; // each buffer's size
-  int count;//buffer's number
-  int length;//the sum of all buffer's size
-  char *url; //the url where it downloaded
-  uv_work_t *worker;//Point to the worker
-  cspider_t *cspider;//the Main cspider struct
+  char *data[BUFFER_MAX_NUMBER]; /* Array of buffer */
+  unsigned int each[BUFFER_MAX_NUMBER]; /* each buffer's size */
+  int count;/* buffer's number */
+  int length;/* the sum of all buffer's size */
+  char *url; /* the url where it is downloaded */
+  uv_work_t *worker;/* Point to the worker */
+  cspider_t *cspider;/* the Main cspider struct */
 };
+
+
+/*------------------------------------------------------------
+  Added since Dec. 25/2015, don't touch it until finished.  
+  To find more information in page_processer.c .
+-------------------------block start-------------------------*/
+
+/*
+  page carrier
+*/
+#define FileTypeHTML 1
+#define FileTypeCSS 2
+#define FileTypeJSON 3
+
+#define FFmacro_expand(x) x
+#define Fset_file_type(TYPE) ((char)FFmacro_expand(FileType##Type))
+
+struct cs_page {
+  char *data;
+  char file_type;
+  /*---------------------*/
+  unsigned int capacity;
+  unsigned int used;
+  bool gc; /* retention */
+};
+
+/*
+  page carrier'a queue
+*/
+#define MaxPageQueueNum 64
+
+struct cs_page_queue {
+  cs_page **page_queue;
+  /*---------------------*/
+  unsigned int capacity;
+  unsigned int used;
+  bool gc; /* retention */
+};
+
+/*-------------------------block end-------------------------*/
 
 /*
  data queue
 */
 struct cs_rawText_queue_struct {
   cs_rawText_t *data;
-  struct cs_rawText_queue_struct *next; // next node
-  struct cs_rawText_queue_struct *prev; // previous node
+  struct cs_rawText_queue_struct *next; /* next node */
+  struct cs_rawText_queue_struct *prev; /* previous node */
 };
 
 /*data.c*/
