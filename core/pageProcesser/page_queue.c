@@ -73,7 +73,7 @@ page_id alloc_page_from_queue(page_queue_id queue_id) {
     goto label_end;
   for(int i = 0; i < queue.capacity; i++) {
     if(queue.pages[i].data == NULL) {
-      pid = (queue_id << (sizeof(page_id) - LogMaxPageQueueNum)) & queue_id;
+      pid = (queue_id << (sizeof(page_id) - LogMaxPageQueueNum)) | queue_id;
       queue.usage ++;
       private_page_queues[queue_id] = queue;
       break;
