@@ -1,11 +1,6 @@
-#include <string.h>
-#include "pageProcesser.h"
 #include "cs_page.h"
 
-void clear_page(cs_page *p);
-void destroy_page(cs_page *p);
-int new_page(cs_page *p, unsigned int capacity);
-int set_page(cs_page *p, char* context, unsigned int length);
+
 
 /*
   clear_page: fill the data with all zeros.
@@ -49,7 +44,8 @@ int new_page(cs_page *p, unsigned int capacity) {
   p->capacity = capacity;
   memset(p->data, 0, p->capacity);
   /* set p->file_type and p->used to zeros */
-  memset(&p->file_type, 0, sizeof(cs_page) - &0->file_type);
+  p->file_type = 0;
+  p->used = 0;
 }
 
 /*
@@ -61,22 +57,28 @@ int set_page(cs_page *p, char* context, unsigned int length) {
     return 0x1;
   if(context == NULL)
     return 0x10;
-  if(p->length == 0)
+  if(length == 0)
     return 0x100;
   if(p->data == NULL) {
-    free(p->data);
-    goto label_next;
-  }
-  if(p.capacity < length) {
-label_next:
-    unsigned int capacity = (length / 512 + (unsigned int)(length % 512 != 0)) * 512; /* floor to 512 bytes */
+    //free(p->data);
+    //goto label_next;
+    unsigned int capacity = (length / 512 + (unsigned int)((length % 512) != 0)) * 512; /* floor to 512 bytes */
     void* buf = malloc(capacity);
     if(buf == NULL)
       return 0x1000;
     p->capacity = capacity;
     p->data = buf;
   }
-  p->used = length
+  if(p->capacity < length) {
+    free(p->data);
+    unsigned int capacity = (length / 512 + (unsigned int)((length % 512) != 0)) * 512; /* floor to 512 bytes */
+    void* buf = malloc(capacity);
+    if(buf == NULL)
+      return 0x1000;
+    p->capacity = capacity;
+    p->data = buf;
+  }
+  p->used = length;
   p->file_type = FileTypeErr;
   memcpy(p->data, context, length);
   

@@ -37,7 +37,7 @@ struct cs_rawText_struct {
 #define FileTypeCSS 2
 #define FileTypeJSON 3
 
-struct cs_page {
+struct cs_page_struct {
   void *data;
   unsigned int capacity;
   unsigned int used;
@@ -50,7 +50,7 @@ struct cs_page {
 #define MaxPageQueueNum 32
 #define LogMaxPageQueueNum 5
 
-struct cs_page_queue {
+struct cs_page_queue_struct {
   cs_page *pages;
   unsigned int capacity;
   unsigned int usage;
