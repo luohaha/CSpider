@@ -17,6 +17,19 @@ typedef struct site_struct {
   long timeout;// timeout (ms)
 } site_t;
 
+/* --------------------- block starts ------------------------
+  started from DEC. 27/2015, don't touch it until finished 
+------------------------ block starts -----------------------*/
+
+typedef struct site_struct1 {
+  unsigned int strID_user_agent; /* user agent */
+  unsigned int strID_proxy; /* proxy address */
+  unsigned int strID_cookie; /* cookie string */
+  unsigned int time_out;
+} site_t1;
+
+/*------------------------ block ends -----------------------*/
+
 struct cspider_struct {
   uv_loop_t *loop;
   uv_idle_t *idler;
