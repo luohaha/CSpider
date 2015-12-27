@@ -57,6 +57,8 @@ void addUrl(cspider_t *cspider, char *url) {
     bloom_add(cspider->bloom, url);
     unsigned int len = strlen(url) + 1;
     char *reUrl = (char*)malloc(sizeof(char) * len);
+    PANIC(reUrl);
+    
     strncpy(reUrl, url, len);
     uv_rwlock_wrlock(cspider->lock);
     createTask(cspider->task_queue, reUrl);
@@ -78,6 +80,8 @@ void addUrls(cspider_t *cspider, char **urls, int size) {
       bloom_add(cspider->bloom, urls[i]);
       unsigned int len = strlen(urls[i]);
       reUrls[i] = (char*)malloc(sizeof(char) * (len + 1));
+      PANIC(reUrls[i]);
+      
       strncpy(reUrls[i], urls[i], len+1);
     } else {
       reUrls[i] = NULL;
