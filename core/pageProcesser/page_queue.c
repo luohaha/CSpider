@@ -22,8 +22,9 @@ void page_queue_init(void) {
 typedef unsigned int page_queue_id;
 
 page_queue_id new_page_queue(unsigned int capacity) {
+  int i;
   page_queue_id id = BadPageQueueID;
-  for(int i = 0; i < MaxPageQueueNum; i++) {
+  for(i = 0; i < MaxPageQueueNum; i++) {
     if(private_is_queue_used[i] == FALSE) {
       id = i;
       private_is_queue_used[i] = TRUE;
@@ -46,9 +47,10 @@ label_end:
 */
 
 void destroy_page_queue(page_queue_id id) {
+  int i;
   cs_page_queue queue = private_page_queues[id];
   if(queue.pages != NULL) {
-    for(int i = 0; i < queue.capacity; i++) {
+    for(i = 0; i < queue.capacity; i++) {
       void* p = queue.pages[i].data;
       if(p != NULL)
         free(p);
@@ -67,11 +69,12 @@ void destroy_page_queue(page_queue_id id) {
 typedef unsigned int page_id;
 
 page_id alloc_page_from_queue(page_queue_id queue_id) {
+  int i;
   page_id pid = BadPageID;
   cs_page_queue queue = private_page_queues[queue_id];
   if(queue.pages == NULL)
     return pid;
-  for(int i = 0; i < queue.capacity; i++) {
+  for(i = 0; i < queue.capacity; i++) {
     if(queue.pages[i].data == NULL) {
       pid = (queue_id << (sizeof(page_id) - LogMaxPageQueueNum)) | queue_id;
       queue.usage ++;
