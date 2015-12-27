@@ -1,5 +1,5 @@
-#ifndef PAGEPROCESSER_H
-#define PAGEPROCESSER_H
+#ifndef PAGEPROCESSER_H_DEF
+#define PAGEPROCESSER_H_DEF
 
 #include "CS.h"
 #include "spider.h"
@@ -14,13 +14,13 @@
   raw data, such as html and json which we get.
 */
 struct cs_rawText_struct {
-  char *data[BUFFER_MAX_NUMBER]; // Array of buffer
-  unsigned int each[BUFFER_MAX_NUMBER]; // each buffer's size
-  int count;//buffer's number
-  int length;//the sum of all buffer's size
-  char *url; //the url where it downloaded
-  uv_work_t *worker;//Point to the worker
-  cspider_t *cspider;//the Main cspider struct
+  char *data[BUFFER_MAX_NUMBER]; /* Array of buffer */
+  unsigned int each[BUFFER_MAX_NUMBER]; /* each buffer's size */
+  int count;/* buffer's number */
+  int length;/* the sum of all buffer's size */
+  char *url; /* the url where it is downloaded */
+  uv_work_t *worker;/* Point to the worker */
+  cspider_t *cspider;/* the Main cspider struct */
 };
 
 /*
@@ -28,8 +28,8 @@ struct cs_rawText_struct {
 */
 struct cs_rawText_queue_struct {
   cs_rawText_t *data;
-  struct cs_rawText_queue_struct *next; // next node
-  struct cs_rawText_queue_struct *prev; // previous node
+  struct cs_rawText_queue_struct *next; /* next node */
+  struct cs_rawText_queue_struct *prev; /* previous node */
 };
 
 /*data.c*/

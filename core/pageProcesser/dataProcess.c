@@ -11,7 +11,8 @@ void dataproc(uv_work_t *req) {
   cs_rawText_t *text = (cs_rawText_t*)req->data;
   //Put all buffer's data into a string
   char *get = (char*)malloc(sizeof(char) * text->length+1);
-  assert(get != NULL);
+  PANIC(get);
+  
   int i;
   int currentCount = 0;
   for (i = 0; i < text->count; i++) {
@@ -37,7 +38,8 @@ void datasave(uv_work_t *req, int status) {
   uv_rwlock_wrlock(cspider->lock);
   cspider->pipeline_thread--;
   cs_rawText_queue *q = removeData(cspider->data_queue_doing, req->data);
-  assert(q != NULL);
+  PANIC(q);
+  
   logger(q != NULL, "removeData error in %s.\n", "dataProcess.c", cspider);
   freeData(q);
   uv_rwlock_wrunlock(cspider->lock);

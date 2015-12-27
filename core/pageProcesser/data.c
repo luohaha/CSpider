@@ -21,6 +21,8 @@ initDataQueue : return initial data queue
 **/
 textq *initDataQueue() {
   textq *queue = (textq*) malloc(sizeof(textq));
+  PANIC(queue);
+  
   queue->next = queue;
   queue->prev = queue;
   queue->data = NULL;
@@ -34,6 +36,7 @@ textq *initDataQueue() {
 **/
 text *createData() {
   text *node = (text*)malloc(sizeof(text));
+  PANIC(node);
   
   node->count = 0;
   node->length = 0;

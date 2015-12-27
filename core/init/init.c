@@ -1,6 +1,7 @@
 #include "spider.h"
 #include "downloader.h"
 #include "utils.h"
+#include "scheduler.h"
 
 /**
   init_cspider : init the cspider
@@ -10,7 +11,18 @@
 
 cspider_t *init_cspider() {
   cspider_t *spider = (cspider_t *)malloc(sizeof(cspider_t));
+  PANIC(spider);
+  //init task queue
   spider->task_queue = initTaskQueue();
+  PANIC(spider->task_queue);
+  spider->task_queue_doing = initTaskQueue();
+  PANIC(spider->task_queue_doing);
+  //init data queue
+  spider->data_queue = initDataQueue();
+  PANIC(spider->data_queue);
+  spider->data_queue_doing = initDataQueue();
+  PANIC(spider->data_queue_doing);
+  
   spider->download_thread_max = 5;
   spider->pipeline_thread_max = 5;
   spider->download_thread = 1;
@@ -20,9 +32,7 @@ cspider_t *init_cspider() {
   spider->process_user_data = NULL;
   spider->save_user_data = NULL;
   spider->loop = uv_default_loop();
-  spider->task_queue_doing = initTaskQueue();
-  spider->data_queue = initDataQueue();
-  spider->data_queue_doing = initDataQueue();
+  
   spider->idler = (uv_idle_t*)malloc(sizeof(uv_idle_t));
   spider->lock = (uv_rwlock_t*)malloc(sizeof(uv_rwlock_t));
   uv_rwlock_init(spider->lock);
@@ -44,13 +54,14 @@ cspider_t *init_cspider() {
  @url : new task's url
 **/
 void cs_setopt_url(cspider_t *cspider, char *url){
-  assert(cspider != NULL);
-  assert(url != NULL);
+  PANIC(cspider);
+  PANIC(url);
   if (!bloom_check(cspider->bloom, url)) {
     //url no exits
     bloom_add(cspider->bloom, url);
     unsigned int len = strlen(url);
     char *reUrl = (char*)malloc(sizeof(char) * (len+1));
+    PANIC(reUrl);
     strncpy(reUrl, url, len+1);
     createTask(cspider->task_queue, reUrl);
   }
@@ -62,6 +73,8 @@ cs_setopt_cookie : set cookie
 @cookie : the cookie string
 **/
 void cs_setopt_cookie(cspider_t *cspider, char *cookie) {
+  PANIC(cspider);
+  PANIC(cookie);
   ((site_t*)cspider->site)->cookie = cookie;
 }
 
@@ -69,6 +82,8 @@ void cs_setopt_cookie(cspider_t *cspider, char *cookie) {
   cs_setopt_useragent : set user agent
 **/
 void cs_setopt_useragent(cspider_t *cspider, char *agent) {
+  PANIC(cspider);
+  PANIC(agent);
   ((site_t*)cspider->site)->user_agent = agent;
 }
 
@@ -76,6 +91,8 @@ void cs_setopt_useragent(cspider_t *cspider, char *agent) {
   cs_setopt_proxy : set proxy
 **/
 void cs_setopt_proxy(cspider_t *cspider, char *proxy) {
+  PANIC(cspider);
+  PANIC(proxy);
   ((site_t*)cspider->site)->proxy = proxy;
 }
 
@@ -83,12 +100,15 @@ void cs_setopt_proxy(cspider_t *cspider, char *proxy) {
  cs_setopt_timeout : set timeout(ms)
 **/
 void cs_setopt_timeout(cspider_t *cspider, long timeout) {
+  PANIC(cspider);
   ((site_t*)cspider->site)->timeout = timeout;
 }
 /**
   cs_setopt_logfile : set log file
 **/
 void cs_setopt_logfile(cspider_t *cspider, FILE *log) {
+  PANIC(cspider);
+  PANIC(log);
   cspider->log = log;
   cspider->log_lock = (uv_rwlock_t*)malloc(sizeof(uv_rwlock_t));
   uv_rwlock_init(cspider->log_lock);
@@ -100,7 +120,8 @@ cs_setopt_process : pass the costom process function to cspider
 @user_data : Pointer to context data which you want to pass to @process
  **/
 void cs_setopt_process(cspider_t *cspider, void (*process)(cspider_t *, char *, char*, void*), void *user_data) {
-  assert(cspider != NULL);
+  PANIC(cspider);
+  PANIC(process);
   cspider->process = process;
   cspider->process_user_data = user_data;
 }
@@ -111,7 +132,8 @@ cs_setopt_save : pass the costom save function to cspider
 @user_data : Pointer to context data which you want to pass to @save
  **/
 void cs_setopt_save(cspider_t *cspider, void (*save)(void*, void*), void *user_data){
-  assert(cspider != NULL);
+  PANIC(cspider);
+  PANIC(save);
   cspider->save = save;
   cspider->save_user_data = user_data;
 }
@@ -128,6 +150,7 @@ void cs_setopt_save(cspider_t *cspider, void (*save)(void*, void*), void *user_d
   @number whill be the max number of save thread
 **/
 void cs_setopt_threadnum(cspider_t *cspider, int flag, int number) {
+  PANIC(cspider);
   assert(flag == DOWNLOAD || flag == SAVE);
   assert(number > 0);
   if (flag == DOWNLOAD) {

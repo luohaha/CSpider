@@ -13,13 +13,22 @@
 **/
 size_t save_data(void *ptr, size_t size, size_t nmemb, void *ss) {
   cs_task_t *save = (cs_task_t*)ss;
-  
+  size_t count = save->data->count;
   size_t all = size * nmemb;
-  save->data->data[save->data->count] = (char*)malloc(sizeof(char)*all);
-  strncpy(save->data->data[save->data->count], (char*)ptr, all);
-  save->data->each[save->data->count] = all;
-  save->data->count++;
+  
+  char* buf = (char*) malloc(all);
+  if(buf == NULL) 
+    return (size_t) -1;
+  save->data->data[count] = buf; // "char != 1" only appears in IBM machines.
+  
+  if(ptr == NULL)
+    return (size_t) -1;
+  strncpy(save->data->data[count], (char*)ptr, all);
+  
+  save->data->each[count] = all;
+  save->data->count = count + 1;
   save->data->length += all;
+  
   return all;
 }
 
@@ -35,6 +44,7 @@ void download(uv_work_t *req) {
   cspider_t *cspider = task->cspider;
   site_t *site = (site_t*)cspider->site;
   curl = curl_easy_init();
+  PANIC(curl);
   
   if (curl) {
     if (site->user_agent != NULL) {
@@ -86,9 +96,11 @@ void work_done(uv_work_t *req, int status) {
   uv_rwlock_wrlock(cspider->lock);
   cspider->download_thread--;
   cs_task_queue *q = removeTask(cspider->task_queue_doing, req->data);
-  assert(q != NULL);
+  PANIC(q);
   
   cs_rawText_queue *queue = (cs_rawText_queue*)malloc(sizeof(cs_rawText_queue));
+  PANIC(queue);
+  
   queue->data = q->task->data;
   addData(cspider->data_queue, queue);
   freeTask(q);
