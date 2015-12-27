@@ -15,7 +15,7 @@ void p(cspider_t *cspider, char *d, char *url, void *user_data) {
 void s(void *str, void *user_data) {
   char *get = (char*)str;
   FILE *file = (FILE*)user_data;
-//  fprintf(file, "%s\n", get);
+  fprintf(file, "%s\n", get);
   return;
 }
 
