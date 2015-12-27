@@ -1,5 +1,24 @@
 #include "cs_string.h"
 
+page_queue_id private_cs_string_queue;
+
+/*
+  cs_string_init
+*/
+
+bool cs_string_init(unsigned int capacity) {
+  private_cs_string_queue = new_page_queue(capacity);
+  return private_cs_string_queue == BadPageID;
+}
+
+/*
+  alloc_string
+*/
+
+page_id alloc_string(void) {
+  return alloc_page_from_queue(private_cs_string_queue);
+}
+
 /*
   set_string
 */
