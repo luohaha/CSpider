@@ -23,7 +23,8 @@ typedef unsigned int page_queue_id;
 
 page_queue_id new_page_queue(unsigned int capacity) {
   page_queue_id id = BadPageQueueID;
-  for(int i = 0; i < MaxPageQueueNum; i++) {
+  int i;
+  for(i = 0; i < MaxPageQueueNum; i++) {
     if(private_is_queue_used[i] == FALSE) {
       id = i;
       private_is_queue_used[i] = TRUE;
@@ -47,8 +48,9 @@ label_end:
 
 void destroy_page_queue(page_queue_id id) {
   cs_page_queue queue = private_page_queues[id];
+  int i;
   if(queue.pages != NULL) {
-    for(int i = 0; i < queue.capacity; i++) {
+    for(i = 0; i < queue.capacity; i++) {
       void* p = queue.pages[i].data;
       if(p != NULL)
         free(p);
