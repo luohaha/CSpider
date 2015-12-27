@@ -12,6 +12,7 @@ Welcome any program using cspider to add links here.
 	* [libuv](https://github.com/libuv/libuv)
 	* [libxml2](http://xmlsoft.org/index.html)
 	* [pcre](http://www.pcre.org)
+	* [liburi](https://github.com/nevali/liburi)
 * Then enter `core`，and compile:
 
 ```
@@ -115,9 +116,22 @@ gcc -o test test.c -lcspider -I /usr/include/libxml2
 3. Json:  
 
 	cspider contains cJSON. We could use it to parse json data. Usage is [here](https://github.com/kbranigan/cJSON)。  
+
+4. Uriparser:
+
+	* `void joinall(char *baseuri, char **uris, int size);` -> join all uris relative to baseuri
 	
+	baseuri: Base uri ( char *url in process func )
+	uris: regex / xpath extracted urls
+	size: length of uris
+
+	* `char *  join(char *baseuri, char *rel)` -> join relative string to the base string
+	
+	baseuri: Base uri ( http://test.com/ )
+	rel: Relative url ( /a/b || ./a/b || ../a/b/./ and ... )
+
 >After `regexAll` and `xpath`, you should use `freeStrings` to free the string array which you get.
-	
+
 ##Example
 Print the Github's main page's source code.  
 

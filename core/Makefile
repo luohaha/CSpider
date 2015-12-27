@@ -1,7 +1,7 @@
 TARGET=libcspider.so
 CC=gcc
-CFLAGS=-ggdb -o3 -w -I includes -I /usr/include/libxml2 -fpic
-LIBFLAG=-luv -lcurl -lpcre -lxml2
+CFLAGS=-ggdb -o3 -w -I includes -I /usr/include/libxml2 -I/usr/local/include -fpic -L/usr/local/lib
+LIBFLAG=-luv -lcurl -lpcre -lxml2 -luri
 C_SOURCES=$(shell find . -name "*.c")
 C_OBJECTS=$(patsubst %.c, %.o, $(C_SOURCES))
 HEADERS=$(shell find . -name "*.h")
