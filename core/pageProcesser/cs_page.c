@@ -71,13 +71,13 @@ int set_page(cs_page *p, char* context, unsigned int length) {
     p->used = 0;
     p->file_type = FileTypeErr;
   }
-  else if(p->capacity - used < length) {
+  else if(p->capacity - p->used < length) {
     unsigned int capacity = p->capacity + \
       (length / 512 + (unsigned int)((length % 512) != 0)) * 512; /* floor to 512 bytes */
     void* buf = malloc(capacity);
     if(buf == NULL)
       return 0x10000; /* 5 */
-    memcpy(buf, p->data, used);
+    memcpy(buf, p->data, p->used);
     free(p->data);
     p->capacity = capacity;
     p->data = buf;
