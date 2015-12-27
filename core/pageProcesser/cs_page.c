@@ -54,33 +54,37 @@ int new_page(cs_page *p, unsigned int capacity) {
 
 int set_page(cs_page *p, char* context, unsigned int length) {
   if(p == NULL)
-    return 0x1;
+    return 0x1; /* 1 */
   if(context == NULL)
-    return 0x10;
+    return 0x10; /* 2 */
   if(length == 0)
-    return 0x100;
+    return 0x100; /* 3 */
+  
   if(p->data == NULL) {
-    //free(p->data);
-    //goto label_next;
-    unsigned int capacity = (length / 512 + (unsigned int)((length % 512) != 0)) * 512; /* floor to 512 bytes */
+    unsigned int capacity = \
+      (length / 512 + (unsigned int)((length % 512) != 0) + 2) * 512; /* floor to 512 bytes */
     void* buf = malloc(capacity);
     if(buf == NULL)
-      return 0x1000;
+      return 0x1000; /* 4 */
     p->capacity = capacity;
     p->data = buf;
+    p->used = 0;
+    p->file_type = FileTypeErr;
   }
-  if(p->capacity < length) {
+  else if(p->capacity - used < length) {
+    unsigned int capacity = p->capacity + \
+      (length / 512 + (unsigned int)((length % 512) != 0)) * 512; /* floor to 512 bytes */
+    void* buf = malloc(capacity);
+    if(buf == NULL)
+      return 0x10000; /* 5 */
+    memcpy(buf, p->data, used);
     free(p->data);
-    unsigned int capacity = (length / 512 + (unsigned int)((length % 512) != 0)) * 512; /* floor to 512 bytes */
-    void* buf = malloc(capacity);
-    if(buf == NULL)
-      return 0x1000;
     p->capacity = capacity;
     p->data = buf;
   }
-  p->used = length;
-  p->file_type = FileTypeErr;
-  memcpy(p->data, context, length);
+  
+  memcpy(p->data + p->used, context, length);
+  p->used += length;
   
   return 0;
 }
