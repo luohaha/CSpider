@@ -1,10 +1,12 @@
 #include<cspider/spider.h>
+#include <locale.h>
 
 void p(cspider_t *cspider, char *d, char *url, void *user_data) {
   char *get[10];
-  //int size = xpath(d, "//div[@id='listofficial']/div[@class='yk-row yk-v-80']/div[@class='yk-col3']/div[@class='p p-small']/div[@class='p-meta pa']/div[@class='p-meta-title']/a/@href", get, 10);
-  int size = regexAll("http:\\/\\/(.*?)\\.html", d, get, 3, REGEX_ALL);
-  
+  int size = xpath(d, "//a/@href", get, 10);
+//  int size = regexAll("http:\\/\\/(.*?)\\.html", d, get, 3, REGEX_ALL);
+
+	joinall(url,get,size);
   addUrls(cspider, get, size);
   saveStrings(cspider, (void**)get, size, LOCK);
   freeStrings(get, size);
@@ -13,13 +15,14 @@ void p(cspider_t *cspider, char *d, char *url, void *user_data) {
 void s(void *str, void *user_data) {
   char *get = (char*)str;
   FILE *file = (FILE*)user_data;
-  fprintf(file, "%s\n", get);
+//  fprintf(file, "%s\n", get);
   return;
 }
 
 int main() {
-  cspider_t *spider = init_cspider(); 
+  cspider_t *spider = init_cspider();
   char *agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.10; rv:42.0) Gecko/20100101 Firefox/42.0";
+	setlocale(LC_ALL,"");
 
   cs_setopt_url(spider, "http://www.youku.com/v_olist/c_96_s_0_d_0_g_0_a_0_r_0_u_0_pt_0_av_0_ag_0_sg_0_mt_0_lg_0_q_0_pr_0_h_0_p_1.html");
 
