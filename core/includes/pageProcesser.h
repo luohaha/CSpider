@@ -23,41 +23,6 @@ struct cs_rawText_struct {
   cspider_t *cspider;/* the Main cspider struct */
 };
 
-
-/*------------------------------------------------------------
-  Added since Dec. 25/2015, don't touch it until finished.  
-  To find more information in page_processer.c .
--------------------------block start-------------------------*/
-
-/*
-  page carrier
-*/
-#define FileTypeErr 0
-#define FileTypeHTML 1
-#define FileTypeCSS 2
-#define FileTypeJSON 3
-
-struct cs_page_struct {
-  void *data;
-  unsigned int capacity;
-  unsigned int used;
-  char file_type;
-};
-
-/*
-  page carrier'a queue
-*/
-#define MaxPageQueueNum 32
-#define LogMaxPageQueueNum 5
-
-struct cs_page_queue_struct {
-  cs_page *pages;
-  unsigned int capacity;
-  unsigned int usage;
-};
-
-/*-------------------------block end-------------------------*/
-
 /*
  data queue
 */
