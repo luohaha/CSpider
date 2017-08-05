@@ -3,10 +3,10 @@
 A scalable and convenient crawler framework based on C:).  
 [中文文档.](https://github.com/luohaha/CSpider/wiki/中文文档)
 
-##Examples
+## Examples
 Welcome any program using cspider to add links here.
 
-##INSTALL
+## INSTALL
 * Make sure you have installed these libs already.
 	* [curl](https://github.com/bagder/curl)
 	* [libuv](https://github.com/libuv/libuv)
@@ -33,9 +33,9 @@ gcc -o test test.c -lcspider -I /usr/include/libxml2
 
 > using `-lcspider` to link dynamic link libary, and `-I /usr/include/libxml2` could let compiler to find libxml2's head files.  
 
-##API
+## API
 
-###Initial settings
+### Initial settings
 * `cspider_t *init_cspider()`  
 	At the beginning of your code, you can get `cspider_t` by this function. It's essential.
 	
@@ -69,7 +69,7 @@ gcc -o test test.c -lcspider -I /usr/include/libxml2
 * `int cs_run(cspider_t *)`  
 	Start cspider. Using this at the end of your code.  
 	
-###More functions
+### More functions
 
 * `void saveString(cspider_t *, void *, int)`  
 	Using this function in custom process function could pass data pointer to custom data persistence function. In the third param, you could use `LOCK` if you need thread safety. For exmaple, multi-thread write to same file. You could alse use `NO_LOCK`, if you don't need thread safety. 
@@ -89,7 +89,7 @@ gcc -o test test.c -lcspider -I /usr/include/libxml2
 * `void freeStrings(char **, int)`  
 	Using this function to free array of string. Second param is the size of array. You could use this function after `regexAll` and `xpath` to free the string array you get.
 	
-###Tools
+### Tools
 
 1. Regular expressions:  
 
@@ -132,7 +132,7 @@ gcc -o test test.c -lcspider -I /usr/include/libxml2
 
 >After `regexAll` and `xpath`, you should use `freeStrings` to free the string array which you get.
 
-##Example
+## Example
 Print the Github's main page's source code.  
 
 ```c
