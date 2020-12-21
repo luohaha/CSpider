@@ -31,7 +31,7 @@ make install
 gcc -o test test.c -lcspider -I /usr/include/libxml2
 ```
 
-> using `-lcspider` to link dynamic link libary, and `-I /usr/include/libxml2` could let compiler to find libxml2's head files.  
+> using `-lcspider` to link dynamic link library, and `-I /usr/include/libxml2` could let compiler to find libxml2's head files.  
 
 ## API
 
